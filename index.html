@@ -27,15 +27,13 @@
         align-items: center !important;
     }
 
-    /* 2. Master Container (1091x820) */
+    /* 2. Master Container */
     #ws4000-screen {
         width: 1091px !important; 
         height: 820px !important;
         flex-shrink: 0 !important;
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
         background-size: 100% 100% !important; 
-        background-position: center !important;
-        background-repeat: no-repeat !important;
         position: relative !important;
     }
 
@@ -52,28 +50,26 @@
         position: absolute !important;
         top: 50px !important;   
         left: 350px !important; 
-        line-height: 1.1 !important;
     }
 
-    /* 5. WEATHER ICON (Top 335, Left 125) */
+    /* 5. WEATHER ICON: Down 50px (335 -> 385) */
     #weather-icon {
         position: absolute !important;
-        top: 335px !important; 
+        top: 385px !important; 
         left: 125px !important;
         width: 150px !important;
         height: auto !important;
     }
 
-    /* 6. NEW WIND TEXT: 45px below Cloudy.gif (335 + 150 icon height approx + 45 = 530) */
-    /* Adjusting 'top' based on the icon position + spacing */
+    /* 6. WIND SUBTEXT: Shifted to stay below the icon (530 -> 580) */
     .icon-subtext {
         position: absolute !important;
-        top: 530px !important; 
+        top: 580px !important; 
         left: 125px !important;
         color: #fff !important;
         font-size: 2.2rem !important;
         text-shadow: 4px 4px #000 !important;
-        white-space: pre !important; /* Preserves the spacing you typed */
+        white-space: pre !important;
     }
 
     /* 7. YELLOW LABEL */
@@ -86,7 +82,7 @@
         text-shadow: 4px 4px #000 !important;
     }
 
-    /* 8. TEMPERATURE & MIST */
+    /* 8. TEMPERATURE (Stays at 200px) */
     #temp-value {
         position: absolute !important;
         top: 200px !important;
@@ -96,20 +92,21 @@
         color: #fff !important;
     }
 
+    /* 9. MIST: Down 25px (310 -> 335) */
     .condition-label {
         position: absolute !important;
-        top: 310px !important; 
+        top: 335px !important; 
         left: 130px !important; 
         font-size: 1.5rem !important;
         text-shadow: 4px 4px #000 !important;
         color: #fff !important;
     }
 
-    /* 9. WEATHER STATS: Moved Left by 250px (Right 120 -> Right 370) */
+    /* 10. WEATHER STATS: Up 75px (370 -> 295) */
     .stats-box {
         position: absolute !important;
-        top: 370px !important; 
-        right: 370px !important; /* Shifted left */
+        top: 295px !important; 
+        right: 370px !important; 
         font-size: 2.2rem !important;
         line-height: 1.6 !important;
         text-shadow: 4px 4px #000 !important;
@@ -124,7 +121,6 @@
         <div class="header">Current<br>Conditions</div>
 
         <img id="weather-icon" src="https://wsbylunv.neocities.org/yea/Cloudy.gif" alt="Cloudy">
-        
         <div class="icon-subtext">Wind:      E 133</div>
 
         <div class="location-label">the summit of yoyle mountain</div>
