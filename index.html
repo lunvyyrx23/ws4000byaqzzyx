@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>aqzzyxs WS4000+ | Current Conditions</title>
+    <title>aqzzyxs WS4000+</title>
     <style>
         @font-face {
             font-family: "Star4000";
@@ -16,17 +16,17 @@
             font-family: "Star4000", sans-serif;
         }
 
-        /* --- BOOT SCREEN --- */
+        /* --- BOOT SCREEN (The Intro) --- */
         #boot-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 1s;
+            transition: opacity 1s ease-in-out;
         }
         .boot-text { font-size: 1.5rem; color: #ffff00; opacity: 0; margin: 10px; text-align: center; }
         .active { opacity: 1; }
 
-        /* --- MAIN DISPLAY --- */
+        /* --- MAIN SCREEN --- */
         #display-container {
             position: relative; width: 100vw; height: 100vh;
             display: flex; justify-content: center; align-items: center;
@@ -36,46 +36,29 @@
 
         /* --- DATA OVERLAY --- */
         #data-layer {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2;
-            color: white;
-            text-shadow: 3px 3px #000; /* Classic CRT text shadow */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2; color: white; text-shadow: 3px 3px #000;
         }
 
-        .header-text {
-            position: absolute; top: 12%; left: 8%;
-            color: #ffff00; font-size: 1.8rem;
-        }
+        .header-text { position: absolute; top: 12%; left: 8%; color: #ffff00; font-size: 1.8rem; }
+        .city-name { position: absolute; top: 25%; left: 8%; font-size: 2.2rem; color: #fff; }
+        .condition-text { position: absolute; top: 38%; left: 8%; color: #00ffff; font-size: 1.8rem; }
 
-        .city-name {
-            position: absolute; top: 25%; left: 8%;
-            font-size: 2.2rem; color: #fff;
-        }
-
-        .condition-text {
-            position: absolute; top: 38%; left: 8%;
-            color: #00ffff; font-size: 1.8rem;
-        }
-
-        /* LARGE TEMPERATURE ON THE RIGHT */
-        #temp-display {
-            position: absolute;
-            top: 25%;
-            right: 12%;
-            font-size: 8rem; /* Big impact temperature */
-            letter-spacing: -5px;
-        }
-
+        #temp-display { position: absolute; top: 25%; right: 12%; font-size: 8rem; letter-spacing: -5px; }
         .degree-symbol { font-size: 3rem; vertical-align: top; margin-left: 5px; }
 
+        /* ADDITIONAL STATS ROWS */
+        .stats-container { position: absolute; bottom: 15%; left: 8%; font-size: 1.4rem; line-height: 1.8; }
+        .stat-row { display: flex; width: 400px; }
+        .stat-label { color: #ffff00; width: 180px; }
+        .stat-val { color: #fff; }
     </style>
 </head>
-<body onload="runBoot()">
+<body onload="initSystem()">
 
     <div id="boot-screen">
         <div id="bt1" class="boot-text">aqzzyxs WeatherStar 4000+</div>
-        <div id="bt2" class="boot-text" style="color:white; font-size: 1rem;">CURRENT CONDITIONS</div>
+        <div id="bt2" class="boot-text" style="color:white; font-size: 1rem;">INITIALIZING SATELLITE LINK...</div>
     </div>
 
     <div id="display-container">
@@ -83,26 +66,68 @@
         
         <div id="data-layer">
             <div class="header-text">CURRENT CONDITIONS</div>
-            
-            <div class="city-name" id="city-out">CHICAGO</div>
-            <div class="condition-text" id="cond-out">MOSTLY CLOUDY</div>
+            <div class="city-name" id="city-out">LOADING...</div>
+            <div class="condition-text" id="cond-out">---</div>
 
             <div id="temp-display">
-                <span id="temp-num">72</span><span class="degree-symbol">°</span>
+                <span id="temp-num">--</span><span class="degree-symbol">°</span>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-row"><span class="stat-label">HUMIDITY:</span> <span id="hum-val" class="stat-val">--%</span></div>
+                <div class="stat-row"><span class="stat-label">WIND:</span> <span id="wind-val" class="stat-val">-- MPH</span></div>
+                <div class="stat-row"><span class="stat-label">DEWPT:</span> <span id="dew-val" class="stat-val">--°</span></div>
             </div>
         </div>
     </div>
 
     <script>
-        function runBoot() {
+        // CHANGE THIS TO YOUR CITY
+        const DEFAULT_CITY = "Chicago"; 
+
+        async function initSystem() {
+            // 1. Start Boot Animation
             setTimeout(() => document.getElementById('bt1').classList.add('active'), 500);
             setTimeout(() => document.getElementById('bt2').classList.add('active'), 1500);
             
+            // 2. Fetch Data in background while booting
+            const weatherData = await fetchWeather(DEFAULT_CITY);
+            
+            // 3. Once data is ready, transition screens
             setTimeout(() => {
+                if(weatherData) updateUI(weatherData);
                 const screen = document.getElementById('boot-screen');
                 screen.style.opacity = '0';
                 setTimeout(() => screen.style.display = 'none', 1000);
             }, 3500);
+        }
+
+        async function fetchWeather(city) {
+            try {
+                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=en&format=json`);
+                const geoData = await geoRes.json();
+                const { latitude, longitude, name } = geoData.results[0];
+
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,dew_point_2m&temperature_unit=fahrenheit&wind_speed_unit=mph`);
+                const data = await weatherRes.json();
+                
+                return {
+                    name: name.toUpperCase(),
+                    temp: Math.round(data.current_weather.temperature),
+                    wind: Math.round(data.current_weather.windspeed),
+                    humidity: data.hourly.relative_humidity_2m[0],
+                    dewpoint: Math.round(data.hourly.dew_point_2m[0])
+                };
+            } catch (e) { return null; }
+        }
+
+        function updateUI(data) {
+            document.getElementById('city-out').textContent = data.name;
+            document.getElementById('temp-num').textContent = data.temp;
+            document.getElementById('hum-val').textContent = data.humidity + "%";
+            document.getElementById('wind-val').textContent = data.wind + " MPH";
+            document.getElementById('dew-val').textContent = data.dewpoint + "°";
+            document.getElementById('cond-out').textContent = "FAIR"; // Simplify for now
         }
     </script>
 </body>
