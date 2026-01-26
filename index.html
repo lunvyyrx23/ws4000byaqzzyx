@@ -27,7 +27,7 @@
         align-items: center !important;
     }
 
-    /* 2. The Master Screen Container */
+    /* 2. The Master Screen Container (1091x820) */
     #ws4000-screen {
         width: 1091px !important; 
         height: 820px !important;
@@ -37,58 +37,54 @@
         background-position: center !important;
         background-repeat: no-repeat !important;
         position: relative !important;
-        padding: 60px 75px !important; 
         display: flex !important;
         flex-direction: column !important;
-        /* Ensure it scales from the center */
         transform-origin: center center;
     }
 
-    /* 3. PHONE DETECTION & SCALING (Smaller) */
+    /* 3. ADAPTIVE SCALING FOR PHONE */
     @media only screen and (max-width: 1090px) {
-        #ws4000-screen {
-            /* Scale it down to 35% of original size for phones */
-            /* You can change 0.35 to 0.4 or 0.5 to dial it in */
-            transform: scale(0.35) !important;
-        }
+        #ws4000-screen { transform: scale(0.35) !important; }
     }
 
-    /* 4. PC DETECTION (Bigger/Full Size) */
-    @media only screen and (min-width: 1091px) {
-        #ws4000-screen {
-            transform: scale(1.0) !important;
-        }
-    }
-
-    /* 5. Text Styles */
+    /* 4. THE HEADER: Split, moved down 50px, right 100px */
     .header {
         color: #ffff00 !important;
         font-size: 3rem !important;
         text-shadow: 4px 4px #000 !important;
-        margin-bottom: 50px !important;
+        position: absolute !important;
+        top: 50px !important;   /* Down 50px */
+        left: 100px !important; /* Right 100px */
+        line-height: 1.1 !important;
     }
 
-    .data-row {
-        display: flex !important;
-        justify-content: space-between !important;
-        width: 100% !important;
+    /* 5. TEMP & MIST: Smaller by 50px (scaled down from previous 12rem/2.8rem) */
+    .temp-box {
+        position: absolute !important;
+        top: 200px !important;
+        left: 75px !important;
     }
 
     #temp-value {
-        font-size: 12rem !important;
+        /* Was 12rem (~192px), reduced by 50px to ~142px (approx 8.8rem) */
+        font-size: 8.8rem !important;
         line-height: 0.8 !important;
         text-shadow: 8px 8px #000 !important;
         color: #fff !important;
     }
 
     .condition-label {
-        font-size: 2.8rem !important;
+        /* Was 2.8rem (~45px), reduced by 50px would be negative, so set to a smaller legible size */
+        font-size: 1.5rem !important;
         text-shadow: 4px 4px #000 !important;
         color: #fff !important;
-        margin-top: 10px !important;
     }
 
+    /* 6. WEATHER STATS: Moved down by 500px */
     .stats-box {
+        position: absolute !important;
+        top: 500px !important; /* Moved down 500px from top */
+        right: 75px !important;
         font-size: 2.2rem !important;
         line-height: 1.6 !important;
         text-shadow: 4px 4px #000 !important;
@@ -100,21 +96,19 @@
 <body>
 
     <div id="ws4000-screen">
-        <div class="header">Current Conditions</div>
+        <div class="header">Current<br>Conditions</div>
 
-        <div class="data-row">
-            <div class="temp-box">
-                <div id="temp-value">36°</div>
-                <div class="condition-label">Mist</div>
-            </div>
+        <div class="temp-box">
+            <div id="temp-value">36°</div>
+            <div class="condition-label">Mist</div>
+        </div>
 
-            <div class="stats-box">
-                Wind: Calm<br>
-                Humidity: 92%<br>
-                Dewpoint: 34°<br>
-                Ceiling: Unl<br>
-                Visib: 10 Mi
-            </div>
+        <div class="stats-box">
+            Wind: Calm<br>
+            Humidity: 92%<br>
+            Dewpoint: 34°<br>
+            Ceiling: Unl<br>
+            Visib: 10 Mi
         </div>
     </div>
 
