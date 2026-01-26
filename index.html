@@ -3,131 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>aqzzyxs WS4000+</title>
+    <title>aqzzyxs WS4000+ | Professional</title>
     <style>
         @font-face {
             font-family: "Star4000";
             src: url("https://wsbylunv.neocities.org/Star4000.ttf") format("truetype");
         }
+        body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: "Star4000", sans-serif; display: flex; }
 
-        body, html {
-            margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background: #000; overflow: hidden;
-            font-family: "Star4000", sans-serif;
+        /* --- RETRACTABLE SIDEBAR --- */
+        #sidebar {
+            width: 260px; height: 100%; background: #111; border-right: 2px solid #333;
+            padding: 20px; box-sizing: border-box; transition: transform 0.3s;
+            z-index: 10; position: absolute; left: 0;
         }
-
-        /* --- BOOT SCREEN (The Intro) --- */
-        #boot-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 1s ease-in-out;
-        }
-        .boot-text { font-size: 1.5rem; color: #ffff00; opacity: 0; margin: 10px; text-align: center; }
-        .active { opacity: 1; }
+        .hidden { transform: translateX(-100%); }
+        input { width: 100%; padding: 10px; background: #000; border: 1px solid #ffff00; color: #fff; font-family: "Star4000"; margin-bottom: 10px; }
+        button { width: 100%; padding: 10px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: "Star4000"; }
+        #toggle-btn { position: absolute; right: -40px; top: 20px; background: #333; color: #ffff00; border: none; padding: 10px; cursor: pointer; border-radius: 0 5px 5px 0; }
 
         /* --- MAIN SCREEN --- */
-        #display-container {
-            position: relative; width: 100vw; height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-        }
+        #main-display { position: relative; flex-grow: 1; display: flex; justify-content: center; align-items: center; background: #000; }
+        #bg-img { width: 100%; height: 100%; object-fit: contain; }
+        #data-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; color: white; text-shadow: 3px 3px #000; pointer-events: none; }
 
-        #bg-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
+        .header { position: absolute; top: 12%; left: 10%; color: #ffff00; font-size: 1.8rem; }
+        .city { position: absolute; top: 25%; left: 10%; font-size: 2.5rem; }
+        #temp { position: absolute; top: 25%; right: 15%; font-size: 8rem; }
+        .stats { position: absolute; bottom: 15%; left: 10%; font-size: 1.5rem; line-height: 1.8; }
+        .yellow { color: #ffff00; margin-right: 15px; }
 
-        /* --- DATA OVERLAY --- */
-        #data-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2; color: white; text-shadow: 3px 3px #000;
-        }
-
-        .header-text { position: absolute; top: 12%; left: 8%; color: #ffff00; font-size: 1.8rem; }
-        .city-name { position: absolute; top: 25%; left: 8%; font-size: 2.2rem; color: #fff; }
-        .condition-text { position: absolute; top: 38%; left: 8%; color: #00ffff; font-size: 1.8rem; }
-
-        #temp-display { position: absolute; top: 25%; right: 12%; font-size: 8rem; letter-spacing: -5px; }
-        .degree-symbol { font-size: 3rem; vertical-align: top; margin-left: 5px; }
-
-        /* ADDITIONAL STATS ROWS */
-        .stats-container { position: absolute; bottom: 15%; left: 8%; font-size: 1.4rem; line-height: 1.8; }
-        .stat-row { display: flex; width: 400px; }
-        .stat-label { color: #ffff00; width: 180px; }
-        .stat-val { color: #fff; }
+        #boot-screen { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s; }
+        .boot-t { font-size: 1.5rem; color: #ffff00; opacity: 0; margin: 10px; }
+        .active { opacity: 1; }
     </style>
 </head>
-<body onload="initSystem()">
+<body onload="init()">
 
     <div id="boot-screen">
-        <div id="bt1" class="boot-text">aqzzyxs WeatherStar 4000+</div>
-        <div id="bt2" class="boot-text" style="color:white; font-size: 1rem;">INITIALIZING SATELLITE LINK...</div>
+        <div id="bt1" class="boot-t">aqzzyxs WeatherStar 4000+</div>
+        <div id="bt2" class="boot-t" style="color:white; font-size: 1rem;">SYNCING LOCAL OBSERVATIONS...</div>
     </div>
 
-    <div id="display-container">
+    <div id="sidebar" class="hidden">
+        <button id="toggle-btn" onclick="document.getElementById('sidebar').classList.toggle('hidden')">☰</button>
+        <h3 style="color:#ffff00; font-size: 0.8rem;">MANUAL OVERRIDE</h3>
+        <input type="text" id="city-in" placeholder="CITY or ZIP">
+        <button onclick="manualSearch()">UPDATE STATION</button>
+        <p style="font-size: 0.6rem; color: #666; margin-top: 20px;">SENSORS: HIGH ACCURACY ENABLED</p>
+    </div>
+
+    <div id="main-display">
         <img id="bg-img" src="https://wsbylunv.neocities.org/ws4000_bg.png">
-        
         <div id="data-layer">
-            <div class="header-text">CURRENT CONDITIONS</div>
-            <div class="city-name" id="city-out">LOADING...</div>
-            <div class="condition-text" id="cond-out">---</div>
-
-            <div id="temp-display">
-                <span id="temp-num">--</span><span class="degree-symbol">°</span>
-            </div>
-
-            <div class="stats-container">
-                <div class="stat-row"><span class="stat-label">HUMIDITY:</span> <span id="hum-val" class="stat-val">--%</span></div>
-                <div class="stat-row"><span class="stat-label">WIND:</span> <span id="wind-val" class="stat-val">-- MPH</span></div>
-                <div class="stat-row"><span class="stat-label">DEWPT:</span> <span id="dew-val" class="stat-val">--°</span></div>
+            <div class="header">CURRENT CONDITIONS</div>
+            <div class="city" id="city-out">LOCATING...</div>
+            <div id="temp"><span id="temp-num">--</span>°</div>
+            <div class="stats">
+                <div><span class="yellow">HUMIDITY:</span> <span id="hum">--</span>%</div>
+                <div><span class="yellow">WIND:</span> <span id="wind">--</span> MPH</div>
+                <div><span class="yellow">DEW POINT:</span> <span id="dew">--</span>°</div>
+                <div><span class="yellow">PRESSURE:</span> <span id="press">--</span> IN</div>
             </div>
         </div>
     </div>
 
     <script>
-        // CHANGE THIS TO YOUR CITY
-        const DEFAULT_CITY = "Chicago"; 
+        async function init() {
+            document.getElementById('bt1').classList.add('active');
+            setTimeout(() => document.getElementById('bt2').classList.add('active'), 1000);
+            
+            // Step 1: High Accuracy GPS
+            navigator.geolocation.getCurrentPosition(
+                async (p) => { loadWeather(p.coords.latitude, p.coords.longitude); },
+                () => { loadWeather(40.71, -74.00); }, // Default NYC
+                { enableHighAccuracy: true, timeout: 5000 }
+            );
+        }
 
-        async function initSystem() {
-            // 1. Start Boot Animation
-            setTimeout(() => document.getElementById('bt1').classList.add('active'), 500);
-            setTimeout(() => document.getElementById('bt2').classList.add('active'), 1500);
+        async function manualSearch() {
+            const query = document.getElementById('city-in').value;
+            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1`);
+            const data = await res.json();
+            if(data.results) loadWeather(data.results[0].latitude, data.results[0].longitude);
+        }
+
+        async function loadWeather(lat, lon) {
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m,dew_point_2m,surface_pressure&temperature_unit=fahrenheit&wind_speed_unit=mph`);
+            const d = await res.json();
             
-            // 2. Fetch Data in background while booting
-            const weatherData = await fetchWeather(DEFAULT_CITY);
+            const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+            const gD = await geo.json();
+
+            document.getElementById('city-out').textContent = (gD.address.city || gD.address.town || "LOCAL AREA").toUpperCase();
+            document.getElementById('temp-num').textContent = Math.round(d.current_weather.temperature);
+            document.getElementById('hum').textContent = d.hourly.relative_humidity_2m[0];
+            document.getElementById('wind').textContent = Math.round(d.current_weather.windspeed);
+            document.getElementById('dew').textContent = Math.round(d.hourly.dew_point_2m[0]);
+            document.getElementById('press').textContent = (d.hourly.surface_pressure[0] * 0.02953).toFixed(2);
             
-            // 3. Once data is ready, transition screens
+            closeBoot();
+        }
+
+        function closeBoot() {
             setTimeout(() => {
-                if(weatherData) updateUI(weatherData);
-                const screen = document.getElementById('boot-screen');
-                screen.style.opacity = '0';
-                setTimeout(() => screen.style.display = 'none', 1000);
-            }, 3500);
-        }
-
-        async function fetchWeather(city) {
-            try {
-                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=en&format=json`);
-                const geoData = await geoRes.json();
-                const { latitude, longitude, name } = geoData.results[0];
-
-                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,dew_point_2m&temperature_unit=fahrenheit&wind_speed_unit=mph`);
-                const data = await weatherRes.json();
-                
-                return {
-                    name: name.toUpperCase(),
-                    temp: Math.round(data.current_weather.temperature),
-                    wind: Math.round(data.current_weather.windspeed),
-                    humidity: data.hourly.relative_humidity_2m[0],
-                    dewpoint: Math.round(data.hourly.dew_point_2m[0])
-                };
-            } catch (e) { return null; }
-        }
-
-        function updateUI(data) {
-            document.getElementById('city-out').textContent = data.name;
-            document.getElementById('temp-num').textContent = data.temp;
-            document.getElementById('hum-val').textContent = data.humidity + "%";
-            document.getElementById('wind-val').textContent = data.wind + " MPH";
-            document.getElementById('dew-val').textContent = data.dewpoint + "°";
-            document.getElementById('cond-out').textContent = "FAIR"; // Simplify for now
+                document.getElementById('boot-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('boot-screen').style.display = 'none', 1000);
+            }, 1000);
         }
     </script>
 </body>
