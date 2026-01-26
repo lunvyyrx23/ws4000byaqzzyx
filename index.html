@@ -2,104 +2,89 @@
 <html lang="en">
 <head>
 <style>
-    /* 1. FORCE THE FONT TO OVERRIDE EVERYTHING */
-    @font-face {
-        font-family: 'Star4000';
-        src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype') !important;
-        font-weight: normal !important;
-        font-style: normal !important;
-    }
-
-    /* 2. STRIP ALL BROWSER STYLES AND FORCE NORMAL TEXT */
+    /* 1. RESET AND FONT FORCE */
     * {
         margin: 0 !important;
         padding: 0 !important;
-        border: 0 !important;
-        outline: 0 !important;
+        border: none !important;
         box-sizing: border-box !important;
         font-family: 'Star4000', sans-serif !important;
         text-transform: none !important;
-        font-variant: normal !important;
-        -webkit-user-select: none !important; /* Prevents text highlighting on iPad */
-        user-select: none !important;
     }
 
-    /* 3. FORCE SCREEN REAL ESTATE */
+    @font-face {
+        font-family: 'Star4000';
+        src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
+    }
+
+    /* 2. BACKGROUND COLOR ONLY ON BODY */
     html, body {
-        width: 100vw !important;
-        height: 100 vh !important;
-        min-height: 100% !important;
-        overflow: hidden !important;
-        background-color: #000 !important;
-        position: fixed !important; /* Forces layout to lock to glass edges */
-    }
-
-    /* 4. FORCE THE BACKGROUND TO BE THE ENTIRE SCREEN */
-    body {
-        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
-        background-position: center center !important;
-        background-size: 100% 100% !important; /* Stretches to every corner */
-        background-repeat: no-repeat !important;
-        background-attachment: fixed !important;
-        display: flex !important;
-        flex-direction: column !important;
-    }
-
-    /* 5. FORCE THE CONTENT CONTAINER */
-    #main-container {
         width: 100% !important;
         height: 100% !important;
+        background-color: #000 !important; /* Forces the rest of the screen black */
+        overflow: hidden !important;
         display: flex !important;
-        flex-direction: column !important;
-        padding: 6% 8% !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
+    /* 3. THE IMAGE CONTAINER - LOCKED TO ORIGINAL SIZE */
+    #ws4000-screen {
+        /* This container forces the size to be the image's original size */
+        /* If your image is 640x480, change these to match exactly */
+        width: 640px !important; 
+        height: 480px !important;
+        
+        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
+        background-size: auto !important; /* Forces original size, no stretching */
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        
+        position: relative !important;
+        padding: 40px !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* 4. TEXT STYLES */
     .header {
         color: #ffff00 !important;
-        font-size: clamp(2rem, 5vw, 3.5rem) !important;
-        text-shadow: 4px 4px #000 !important;
-        margin-bottom: 5% !important;
-        width: 100% !important;
+        font-size: 2.2rem !important;
+        text-shadow: 3px 3px #000 !important;
+        margin-bottom: 25px !important;
     }
 
     .data-row {
         display: flex !important;
         justify-content: space-between !important;
-        align-items: flex-start !important;
         width: 100% !important;
     }
 
-    .temp-box {
-        display: flex !important;
-        flex-direction: column !important;
-    }
-
     #temp-value {
-        font-size: clamp(6rem, 18vw, 14rem) !important;
+        font-size: 9rem !important;
         line-height: 0.8 !important;
-        text-shadow: 8px 8px #000 !important;
+        text-shadow: 6px 6px #000 !important;
         color: #fff !important;
     }
 
     .condition-label {
-        font-size: clamp(1.5rem, 4vw, 3rem) !important;
-        text-shadow: 4px 4px #000 !important;
+        font-size: 2rem !important;
+        text-shadow: 3px 3px #000 !important;
         color: #fff !important;
-        margin-top: 10px !important;
+        margin-top: 5px !important;
     }
 
     .stats-box {
-        font-size: clamp(1.2rem, 3vw, 2.5rem) !important;
-        line-height: 1.5 !important;
-        text-shadow: 4px 4px #000 !important;
+        font-size: 1.8rem !important;
+        line-height: 1.4 !important;
+        text-shadow: 3px 3px #000 !important;
         color: #fff !important;
-        text-align: left !important;
     }
 </style>
 </head>
 <body>
 
-    <div id="main-container">
+    <div id="ws4000-screen">
         <div class="header">Current Conditions</div>
 
         <div class="data-row">
