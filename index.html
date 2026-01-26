@@ -3,59 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <style>
-    /* 1. FORCE FONT LOADING */
+    /* THE ANONYMOUS FIX */
     @font-face {
         font-family: 'Star4000';
+        /* This tells the browser to try fetching it even across different sites */
         src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
         font-weight: normal;
         font-style: normal;
+        font-display: swap;
     }
 
-    /* Universal font override */
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: 'Star4000', 'Arial', sans-serif !important;
+        font-family: 'Star4000', sans-serif !important;
         -webkit-font-smoothing: none;
-        -moz-osx-font-smoothing: grayscale;
     }
 
     html, body {
         width: 100%;
         height: 100%;
         background-color: #000;
-        /* Center the giant container */
         display: flex;
         justify-content: center;
         align-items: center;
-        overflow: auto; /* Adds scrollbars because it's now 2x bigger than most screens */
+        overflow: hidden;
     }
 
-    /* 2. THE 2X SCALE CONTAINER */
+    /* THE 0.3 SCALE CONTAINER */
     #ws4000-screen {
         position: relative;
         width: 1091px; 
         height: 820px;
-        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
+        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png');
         background-size: 100% 100%;
         background-repeat: no-repeat;
-        /* THIS IS THE 2X SCALE */
-        transform: scale(2); 
+        transform: scale(0.3); 
         transform-origin: center center;
         flex-shrink: 0;
-        image-rendering: pixelated; /* Keeps it looking like an old CRT */
     }
 
-    /* 3. ELEMENT POSITIONING & FORCED SIZES */
+    /* TEXT ELEMENTS */
     .header {
         color: #ffff00 !important;
-        font-size: 48px !important;
+        font-size: 55px !important;
         text-shadow: 4px 4px #000 !important;
         position: absolute;
         top: 50px;   
         left: 350px; 
-        line-height: 1.1;
     }
 
     #weather-icon {
@@ -92,7 +88,6 @@
         font-size: 140px !important;
         text-shadow: 10px 10px #000 !important;
         color: #fff !important;
-        line-height: 0.8 !important;
     }
 
     .condition-label {
@@ -108,12 +103,11 @@
         position: absolute;
         top: 295px; 
         right: 370px; 
-        font-size: 35px !important;
+        font-size: 38px !important;
         line-height: 1.6 !important;
         text-shadow: 4px 4px #000 !important;
         color: #fff !important;
     }
-
 </style>
 </head>
 <body>
