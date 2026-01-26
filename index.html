@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
 <style>
-    /* 1. COMPLETELY WIPE BROWSER DEFAULTS */
+    /* 1. ULTIMATE RESET */
     * {
         margin: 0 !important;
         padding: 0 !important;
         border: none !important;
-        outline: none !important;
         box-sizing: border-box !important;
         font-family: 'Star4000', sans-serif !important;
-        -webkit-font-smoothing: none;
     }
 
     @font-face {
@@ -18,69 +16,85 @@
         src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
     }
 
-    /* 2. FORCE THE BACKGROUND TO THE EDGE OF THE GLASS */
     html, body {
-        width: 100vw !important;
-        height: 100vh !important;
-        background-color: #000;
+        width: 100% !important;
+        height: 100% !important;
         overflow: hidden !important;
-        position: fixed; /* Prevents scrolling/bouncing on iPad */
+        background-color: #000;
     }
 
     body {
-        /* This is the key: Background applied to the absolute base layer */
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
         background-size: 100% 100% !important;
-        background-position: top left !important;
         background-repeat: no-repeat !important;
-    }
-
-    /* 3. POSITION CONTENT WITHOUT CREATING NEW BOXES */
-    #content-layer {
-        position: absolute;
-        top: 10%;
-        left: 10%;
-        width: 80%;
-        height: 80%;
         display: flex;
         flex-direction: column;
+        padding: 5% 7%;
+    }
+
+    /* 2. THE TOP HEADER */
+    .header {
+        color: #ffff00 !important;
+        font-size: 3.2rem;
+        text-shadow: 4px 4px #000;
+        margin-bottom: 40px !important;
+    }
+
+    /* 3. THE MAIN DATA ROW */
+    .data-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .temp-section {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #temp-value {
+        font-size: 14rem;
+        line-height: 0.8;
+        text-shadow: 8px 8px #000;
         color: white;
     }
 
-    .yellow-header {
-        color: #ffff00 !important;
-        font-size: 3.5rem;
-        text-shadow: 4px 4px #000;
-        text-transform: uppercase;
-        margin-bottom: 20px !important;
-    }
-
-    #temp {
-        font-size: 13rem;
-        text-shadow: 7px 7px #000;
-        margin-bottom: 20px !important;
-        line-height: 0.9;
-    }
-
-    .data-text {
+    .condition-text {
         font-size: 2.8rem;
-        line-height: 1.5;
+        margin-top: 10px !important;
         text-shadow: 4px 4px #000;
-        text-transform: uppercase;
+        color: white;
+    }
+
+    /* 4. THE RIGHT-SIDE STATS */
+    .stats-column {
+        text-align: left;
+        font-size: 2.4rem;
+        line-height: 1.6;
+        text-shadow: 4px 4px #000;
+        color: white;
+        margin-top: 20px !important;
+        padding-right: 5%;
     }
 </style>
 </head>
 <body>
 
-    <div id="content-layer">
-        <div class="yellow-header">Current Conditions</div>
-        <div id="temp">36°</div>
-        
-        <div class="data-text">
-            MIST / LIGHT RAIN<br>
-            WIND: CALM<br>
-            HUMIDITY: 92%<br>
-            DEWPOINT: 34°
+    <div class="header">Current Conditions</div>
+
+    <div class="data-container">
+        <div class="temp-section">
+            <div id="temp-value">36°</div>
+            <div class="condition-text">Mist</div>
+        </div>
+
+        <div class="stats-column">
+            Wind: Calm<br>
+            Humidity: 92%<br>
+            Dewpoint: 34°<br>
+            Ceiling: Unl<br>
+            Visib: 10 Mi
         </div>
     </div>
 
