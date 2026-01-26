@@ -27,7 +27,7 @@
         align-items: center !important;
     }
 
-    /* 2. Master Container */
+    /* 2. Master Container (1091x820) */
     #ws4000-screen {
         width: 1091px !important; 
         height: 820px !important;
@@ -45,7 +45,7 @@
         #ws4000-screen { transform: scale(0.35) !important; }
     }
 
-    /* 4. Header (Remains at Top 50, Right 350) */
+    /* 4. Header (Down 50, Right 350) */
     .header {
         color: #ffff00 !important;
         font-size: 3rem !important;
@@ -56,36 +56,33 @@
         line-height: 1.1 !important;
     }
 
-    /* 5. Temp & Mist: Mist Centered under 36 */
-    .temp-box {
+    /* 5. TEMPERATURE: Moved Right by 25px (75 -> 100) */
+    #temp-value {
         position: absolute !important;
         top: 200px !important;
-        left: 50px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important; /* Forces Mist to center under the Temp */
-        text-align: center !important;
-    }
-
-    #temp-value {
+        left: 100px !important; /* This is the 25px shift right */
         font-size: 8.8rem !important;
         line-height: 0.8 !important;
         text-shadow: 8px 8px #000 !important;
         color: #fff !important;
     }
 
+    /* 6. MIST: Locked in place, independent of the 36° */
     .condition-label {
+        position: absolute !important;
+        top: 280px !important; /* Original vertical spot */
+        left: 110px !important; /* Original horizontal spot */
         font-size: 1.5rem !important;
         text-shadow: 4px 4px #000 !important;
         color: #fff !important;
-        width: 100% !important;
+        text-align: center !important;
     }
 
-    /* 6. Weather Stats: Up 30px (400-30=370) and Left 45px */
+    /* 7. Weather Stats (Up 30 and Left 45 from before) */
     .stats-box {
         position: absolute !important;
-        top: 370px !important; /* Moved up 30px */
-        right: 120px !important; /* Increased right margin by 45px to move it left */
+        top: 370px !important; 
+        right: 120px !important; 
         font-size: 2.2rem !important;
         line-height: 1.6 !important;
         text-shadow: 4px 4px #000 !important;
@@ -99,10 +96,8 @@
     <div id="ws4000-screen">
         <div class="header">Current<br>Conditions</div>
 
-        <div class="temp-box">
-            <div id="temp-value">36°</div>
-            <div class="condition-label">Mist</div>
-        </div>
+        <div id="temp-value">36°</div>
+        <div class="condition-label">Mist</div>
 
         <div class="stats-box">
             Wind: Calm<br>
