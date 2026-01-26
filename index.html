@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <style>
-    /* THE ANONYMOUS FIX */
+    /* 1. LOCAL FONT CHECK */
     @font-face {
         font-family: 'Star4000';
-        /* This tells the browser to try fetching it even across different sites */
-        src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
+        /* This tells Edge: Check the user's PC for "Star4000" first! */
+        src: local('Star4000'), 
+             url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
         font-weight: normal;
         font-style: normal;
-        font-display: swap;
     }
 
     * {
@@ -19,6 +19,7 @@
         box-sizing: border-box;
         font-family: 'Star4000', sans-serif !important;
         -webkit-font-smoothing: none;
+        text-transform: none !important;
     }
 
     html, body {
@@ -28,10 +29,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        overflow: hidden;
+        overflow: auto; /* Allow scrolling if 0.5 is still large */
     }
 
-    /* THE 0.3 SCALE CONTAINER */
+    /* 2. THE 0.5 SCALE CONTAINER */
     #ws4000-screen {
         position: relative;
         width: 1091px; 
@@ -39,12 +40,13 @@
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png');
         background-size: 100% 100%;
         background-repeat: no-repeat;
-        transform: scale(0.3); 
+        /* SCALE SET TO 0.5 */
+        transform: scale(0.5); 
         transform-origin: center center;
         flex-shrink: 0;
     }
 
-    /* TEXT ELEMENTS */
+    /* 3. ELEMENTS (Coordinates preserved) */
     .header {
         color: #ffff00 !important;
         font-size: 55px !important;
@@ -52,6 +54,7 @@
         position: absolute;
         top: 50px;   
         left: 350px; 
+        line-height: 1.1;
     }
 
     #weather-icon {
@@ -88,6 +91,7 @@
         font-size: 140px !important;
         text-shadow: 10px 10px #000 !important;
         color: #fff !important;
+        line-height: 0.8;
     }
 
     .condition-label {
