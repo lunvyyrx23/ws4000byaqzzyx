@@ -5,68 +5,73 @@
     body {
         margin: 0;
         padding: 0;
-        /* THE FULL URL TO THE NEOCITIES BACKGROUND ASSET */
+        /* FORCING THE EXACT URL FROM YOUR NEOCITIES STORAGE */
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png');
         background-size: 100% 100%;
         background-repeat: no-repeat;
         background-attachment: fixed;
+        background-color: #031b60; /* Deep blue fallback if image fails */
         color: white;
-        font-family: 'Segoe UI', sans-serif; /* Best iPad fallback for the 4000 look */
+        font-family: sans-serif;
         height: 100vh;
         overflow: hidden;
     }
 
-    /* THE SOFT LIGHT SIDEBAR */
+    /* THE SOFT LIGHT SIDEBAR (Light Blue to Transparent Blue) */
     #sidebar {
         position: fixed;
         left: 0;
         top: 0;
-        width: 190px;
+        width: 195px;
         height: 100%;
-        /* Light to Blue gradient with transparency */
-        background: linear-gradient(90deg, rgba(173, 216, 230, 0.4) 0%, rgba(15, 123, 213, 0.1) 100%);
-        border-right: 2px solid rgba(255, 255, 255, 0.2);
-        padding: 30px 15px;
+        /* The requested "Soft Light to Blue" glow */
+        background: linear-gradient(90deg, 
+            rgba(135, 206, 250, 0.5) 0%, 
+            rgba(30, 144, 255, 0.2) 60%, 
+            rgba(0, 0, 139, 0) 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 35px 20px;
         z-index: 10;
-        backdrop-filter: blur(5px); /* Softens the light over the background image */
+        backdrop-filter: blur(6px); /* Makes the light look "Soft" */
     }
 
-    #sidebar-label {
-        color: #ffaa00; /* Classic WS4000 Orange/Gold */
+    #sidebar-text {
+        color: #ffaa00;
         font-weight: bold;
-        font-size: 1.25rem;
+        font-size: 1.3rem;
         text-shadow: 2px 2px #000;
         line-height: 1.1;
         text-transform: uppercase;
     }
 
-    /* MAIN DISPLAY LAYER */
-    #main-content {
-        margin-left: 190px;
-        padding: 60px;
+    /* MAIN CONTENT AREA */
+    #content {
+        margin-left: 210px;
+        padding-top: 60px;
         position: relative;
-        z-index: 5;
     }
 
-    .header-yellow {
-        color: #ffff00; /* Bright yellow for visibility */
+    .yellow-title {
+        color: #ffff00;
         font-size: 2.8rem;
         font-weight: bold;
         text-shadow: 3px 3px #000;
         text-transform: uppercase;
+        margin-bottom: 0;
     }
 
-    #temp-val {
-        font-size: 11rem;
+    #temp-value {
+        font-size: 12rem;
         font-weight: bold;
-        text-shadow: 5px 5px #000;
-        margin: 10px 0;
+        text-shadow: 6px 6px #000;
+        margin: 5px 0;
+        letter-spacing: -5px;
     }
 
-    .details {
-        font-size: 2.2rem;
+    .weather-details {
+        font-size: 2.4rem;
         line-height: 1.6;
-        text-shadow: 2px 2px #000;
+        text-shadow: 3px 3px #000;
         font-weight: bold;
     }
 </style>
@@ -74,15 +79,14 @@
 <body>
 
     <div id="sidebar">
-        <div id="sidebar-label">LOCAL<br>FORECAST</div>
+        <div id="sidebar-text">LOCAL<br>FORECAST</div>
     </div>
 
-    <div id="main-content">
-        <div class="header-yellow">Current Conditions</div>
+    <div id="content">
+        <div class="yellow-title">Current Conditions</div>
+        <div id="temp-value">36°</div>
         
-        <div id="temp-val">36°</div>
-        
-        <div class="details">
+        <div class="weather-details">
             MIST / LIGHT RAIN<br>
             WIND: CALM<br>
             HUMIDITY: 92%<br>
