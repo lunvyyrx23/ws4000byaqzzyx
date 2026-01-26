@@ -7,33 +7,37 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div id="screen">
-        <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png" alt="Background">
-        
-        <div id="overlay">
-            <div id="city-name">SYSTEM READY</div>
-            <div id="weather-box">
-                <div id="status" class="pulse">PRESS / TO SEARCH</div>
-                
-                <div id="details" style="display:none;">
-                    <div class="data-row">
-                        <span class="label">TEMP:</span> 
-                        <span id="temp">--</span>°F
-                    </div>
-                    <div class="data-row">
-                        <span class="label">COND:</span> 
-                        <span id="cond">--</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="label">WIND:</span> 
-                        <span id="wind">--</span>
-                    </div>
-                </div>
-            </div>
+<div id="screen">
+    <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png">
+    
+    <div id="header-container">
+        <div id="page-title">Current<br>Conditions</div>
+        <div id="clock-section">
+            <div id="time">--:--:-- --</div>
+            <div id="date">--- --- --</div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <div id="overlay">
+        <div id="city-name">INITIALIZING...</div>
+        
+        <div id="main-content">
+            <div class="column-left">
+                <div id="big-temp">--°</div>
+                <div id="condition-text">LOADING...</div>
+                <img id="weather-icon" src="https://wsbylunv.neocities.org/sunny.png">
+                <div id="wind-line">Wind: <span id="wind-val">CALM</span></div>
+            </div>
+
+            <div class="column-right">
+                <div class="data-row"><span class="label">Humidity:</span> <span id="hum">--%</span></div>
+                <div class="data-row"><span class="label">Dewpoint:</span> <span id="dew">--°</span></div>
+                <div class="data-row"><span class="label">Ceiling:</span> <span id="ceil">UNLIMITED</span></div>
+                <div class="data-row"><span class="label">Visibility:</span> <span id="vis">-- MI.</span></div>
+                <div class="data-row"><span class="label">Pressure:</span> <span id="pres">--.--</span></div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
