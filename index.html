@@ -2,72 +2,79 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>aqzzyxs WS4000+ | Final Build</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aqzzyxs WS4000+ | Stable Build</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: "Star4000";
-            src: url("https://wsbylunv.neocities.org/Star4000.ttf") format("truetype");
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: #000; overflow: hidden; 
+            font-family: 'Share Tech Mono', 'Star4000', monospace; 
         }
-        body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: "Star4000", sans-serif; display: flex; }
 
-        /* --- SETTINGS ICON --- */
+        /* FIX: Forces the 4:3 TV aspect ratio so it doesn't stretch */
+        #station-viewport {
+            position: relative;
+            width: 100vw;
+            height: 75vw; /* 4:3 Ratio */
+            max-height: 100vh;
+            max-width: 133.33vh;
+            margin: auto;
+            background: #000;
+            overflow: hidden;
+        }
+
+        /* SETTINGS ICON - FIXED SIZE */
         #settings-gear {
             position: absolute; top: 15px; left: 15px; width: 35px; height: 35px;
             background: #222; border: 2px solid #444; color: #ffff00;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 100; font-size: 1.2rem; box-shadow: 2px 2px 0px #000;
+            cursor: pointer; z-index: 100; font-size: 1.2rem;
         }
 
-        /* --- SIDEBAR DRAWER --- */
+        /* SIDEBAR - CLEANER DRAWER */
         #sidebar {
-            position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
-            background: #111; border-right: 3px solid #ffff00; padding: 20px;
-            box-sizing: border-box; transition: left 0.3s ease-in-out; z-index: 99;
+            position: absolute; top: 0; left: -280px; width: 260px; height: 100%;
+            background: rgba(10, 10, 10, 0.95); border-right: 3px solid #ffff00; 
+            padding: 20px; box-sizing: border-box; transition: left 0.3s; z-index: 99;
         }
         #sidebar.open { left: 0; }
-        .drawer-title { color: #ffff00; font-size: 0.8rem; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; font-family: "Star4000"; margin-bottom: 10px; box-sizing: border-box; }
-        .side-btn { width: 100%; padding: 10px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: "Star4000"; }
+        
+        input { width: 100%; padding: 10px; background: #000; border: 1px solid #ffff00; color: #fff; font-family: inherit; margin-bottom: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: inherit; }
 
-        /* --- MAIN DISPLAY --- */
-        #display-container { position: relative; flex-grow: 1; background: #000; display: flex; justify-content: center; align-items: center; }
-        #bg-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
-        #data-layer { position: absolute; inset: 0; z-index: 2; color: white; text-shadow: 3px 3px #000; pointer-events: none; }
+        /* DATA OVERLAY */
+        #bg-img { width: 100%; height: 100%; object-fit: cover; }
+        #data-layer { position: absolute; inset: 0; color: white; text-shadow: 2px 2px #000; pointer-events: none; }
+        
+        .header { position: absolute; top: 10%; left: 8%; color: #ffff00; font-size: 1.5rem; }
+        .city { position: absolute; top: 22%; left: 8%; font-size: 2rem; }
+        #temp-box { position: absolute; top: 22%; right: 12%; font-size: 7rem; }
+        .stats { position: absolute; bottom: 15%; left: 8%; font-size: 1.3rem; line-height: 1.6; }
+        .yellow { color: #ffff00; }
 
-        .header { position: absolute; top: 12%; left: 8%; color: #ffff00; font-size: 1.8rem; }
-        .city { position: absolute; top: 25%; left: 8%; font-size: 2.2rem; }
-        #temp-box { position: absolute; top: 25%; right: 12%; font-size: 8rem; letter-spacing: -5px; }
-        .stats { position: absolute; bottom: 15%; left: 8%; font-size: 1.4rem; line-height: 1.8; }
-        .yellow { color: #ffff00; margin-right: 15px; }
-
-        /* --- BOOT SCREEN --- */
-        #boot-screen { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s; }
-        .boot-t { font-size: 1.5rem; color: #ffff00; opacity: 0; margin: 10px; }
-        .active { opacity: 1; }
+        #boot-screen { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s; }
     </style>
 </head>
 <body onload="init()">
 
     <div id="boot-screen">
-        <div id="bt1" class="boot-t">aqzzyxs WeatherStar 4000+</div>
-        <div id="bt2" class="boot-t" style="color:white; font-size: 1rem;">ESTABLISHING GROUND TRUTH...</div>
+        <div style="color:#ffff00; font-size: 1.5rem;">aqzzyxs WS4000+</div>
+        <div style="color:white; margin-top:10px;">RECALIBRATING SENSORS...</div>
     </div>
 
-    <div id="settings-gear" onclick="toggleSidebar()">⚙</div>
-
-    <div id="sidebar">
-        <div class="drawer-title">STATION DIAGNOSTICS</div>
-        <input type="text" id="city-in" placeholder="ZIP OR CITY">
-        <button class="side-btn" onclick="manualSearch()">UPDATE LINK</button>
-        <div style="margin-top:20px; color:#666; font-size: 0.7rem;">
-            MODEL: <span style="color:#00ffff">HRRR-3KM</span><br>
-            STATUS: <span id="side-stat">INITIALIZING</span>
+    <div id="station-viewport">
+        <div id="settings-gear" onclick="toggleSidebar()">⚙</div>
+        
+        <div id="sidebar">
+            <div style="color:#ffff00; margin-bottom:20px;">STATION OVERRIDE</div>
+            <input type="text" id="city-in" placeholder="ZIP CODE">
+            <button onclick="manualSearch()">SYNC DATA</button>
+            <div id="side-stat" style="margin-top:20px; font-size: 0.8rem; color: #00ff00;">READY</div>
         </div>
-    </div>
 
-    <div id="display-container">
         <img id="bg-img" src="https://wsbylunv.neocities.org/ws4000_bg.png">
+        
         <div id="data-layer">
             <div class="header">CURRENT CONDITIONS</div>
             <div class="city" id="city-out">LOCATING...</div>
@@ -83,55 +90,41 @@
 
     <script>
         function toggleSidebar() {
-            const side = document.getElementById('sidebar');
-            side.classList.toggle('open');
-            document.getElementById('settings-gear').textContent = side.classList.contains('open') ? "✕" : "⚙";
+            document.getElementById('sidebar').classList.toggle('open');
         }
 
         async function init() {
-            document.getElementById('bt1').classList.add('active');
-            setTimeout(() => document.getElementById('bt2').classList.add('active'), 1000);
-            
             navigator.geolocation.getCurrentPosition(
-                async (p) => { loadWeather(p.coords.latitude, p.coords.longitude); },
-                () => { manualSearch(); }, // Fallback to prompt if GPS blocked
-                { enableHighAccuracy: true, timeout: 5000 }
+                (p) => loadWeather(p.coords.latitude, p.coords.longitude),
+                () => manualSearch("10001"), // Default to NYC if GPS fails
+                { enableHighAccuracy: true }
             );
         }
 
-        async function manualSearch() {
-            const query = document.getElementById('city-in').value || "New York";
+        async function manualSearch(zip) {
+            const query = zip || document.getElementById('city-in').value;
+            if(!query) return;
             const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1`);
             const data = await res.json();
             if(data.results) loadWeather(data.results[0].latitude, data.results[0].longitude);
         }
 
         async function loadWeather(lat, lon) {
-            try {
-                // High-resolution HRRR model request
-                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&models=hrrr`);
-                const d = await res.json();
-                
-                const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-                const gD = await geo.json();
+            const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&models=hrrr`);
+            const d = await wRes.json();
+            
+            const gRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+            const gD = await gRes.json();
 
-                const cityName = (gD.address.city || gD.address.town || gD.address.village || "LOCAL").toUpperCase();
-                
-                document.getElementById('city-out').textContent = cityName;
-                document.getElementById('temp-num').textContent = Math.round(d.current.temperature_2m);
-                document.getElementById('hum').textContent = d.current.relative_humidity_2m;
-                document.getElementById('wind').textContent = Math.round(d.current.wind_speed_10m);
-                document.getElementById('dew').textContent = Math.round(d.current.dew_point_2m);
-                document.getElementById('press').textContent = (d.current.surface_pressure * 0.02953).toFixed(2);
-                
-                document.getElementById('side-stat').textContent = "STATION ONLINE";
-                document.getElementById('side-stat').style.color = "#00ff00";
+            document.getElementById('city-out').textContent = (gD.address.city || gD.address.town || "LOCAL").toUpperCase();
+            document.getElementById('temp-num').textContent = Math.round(d.current.temperature_2m);
+            document.getElementById('hum').textContent = d.current.relative_humidity_2m;
+            document.getElementById('wind').textContent = Math.round(d.current.wind_speed_10m);
+            document.getElementById('dew').textContent = Math.round(d.current.dew_point_2m);
+            document.getElementById('press').textContent = (d.current.surface_pressure * 0.02953).toFixed(2);
 
-                setTimeout(() => {
-                    document.getElementById('boot-screen').style.opacity = '0';
-                    setTimeout(() => document.getElementById('boot-screen').style.display = 'none', 1000);
-                }, 1500);
-            } catch(e) { document.getElementById('side-stat').textContent = "SYNC ERROR"; }
+            document.getElementById('boot-screen').style.opacity = '0';
+            setTimeout(() => document.getElementById('boot-screen').style.display = 'none', 800);
         }
     </script>
 </body>
