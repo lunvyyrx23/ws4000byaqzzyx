@@ -45,7 +45,7 @@
         #ws4000-screen { transform: scale(0.35) !important; }
     }
 
-    /* 4. Header (Down 50, Right 350) */
+    /* 4. Header */
     .header {
         color: #ffff00 !important;
         font-size: 3rem !important;
@@ -56,29 +56,47 @@
         line-height: 1.1 !important;
     }
 
-    /* 5. TEMPERATURE: Moved Right by 25px (75 -> 100) */
+    /* 5. WEATHER ICON: Up 50px (435 -> 385), Right 25px (100 -> 125) */
+    #weather-icon {
+        position: absolute !important;
+        top: 385px !important; 
+        left: 125px !important;
+        width: 150px !important;
+        height: auto !important;
+    }
+
+    /* 6. YELLOW LABEL */
+    .location-label {
+        position: absolute !important;
+        top: 220px !important; 
+        right: 120px !important; 
+        color: #ffff00 !important;
+        font-size: 2.2rem !important;
+        text-shadow: 4px 4px #000 !important;
+    }
+
+    /* 7. TEMPERATURE */
     #temp-value {
         position: absolute !important;
         top: 200px !important;
-        left: 100px !important; /* This is the 25px shift right */
+        left: 100px !important; 
         font-size: 8.8rem !important;
         line-height: 0.8 !important;
         text-shadow: 8px 8px #000 !important;
         color: #fff !important;
     }
 
-    /* 6. MIST: Locked in place, independent of the 36° */
+    /* 8. MIST */
     .condition-label {
         position: absolute !important;
-        top: 280px !important; /* Original vertical spot */
-        left: 110px !important; /* Original horizontal spot */
+        top: 310px !important; 
+        left: 130px !important; 
         font-size: 1.5rem !important;
         text-shadow: 4px 4px #000 !important;
         color: #fff !important;
-        text-align: center !important;
     }
 
-    /* 7. Weather Stats (Up 30 and Left 45 from before) */
+    /* 9. WEATHER STATS */
     .stats-box {
         position: absolute !important;
         top: 370px !important; 
@@ -95,6 +113,10 @@
 
     <div id="ws4000-screen">
         <div class="header">Current<br>Conditions</div>
+
+        <img id="weather-icon" src="https://wsbylunv.neocities.org/yea/cloudy.gif" alt="Cloudy">
+
+        <div class="location-label">the summit of yoyle mountain</div>
 
         <div id="temp-value">36°</div>
         <div class="condition-label">Mist</div>
