@@ -2,34 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>WS4000+ | GitHub Edition</title>
+    <title>WS4000+ | Live Satellite</title>
     <style>
-        /* THE FONT FIX: GitHub raw links don't always work as font sources. 
-           This uses a JS-Git CDN that treats the file as a proper font. */
         @font-face {
             font-family: "Star4000";
-            src: url("https://cdn.jsdelivr.net/gh/YOUR_GITHUB_USER/YOUR_REPO_NAME/Star4000.ttf") format("truetype");
-            font-weight: normal; font-style: normal;
+            src: url("https://cdn.jsdelivr.net/gh/lunvyyrx23/ws4000byaqzzyx/Star4000.ttf") format("truetype");
         }
 
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
             background: #000; overflow: hidden; 
-            font-family: "Star4000", monospace !important; 
+            font-family: "Star4000", sans-serif !important; 
         }
 
         #viewport { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
         #bg-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
         
         /* GUI Overlay */
-        #settings-gear { position: absolute; top: 15px; left: 15px; width: 45px; height: 45px; background: #222; border: 2px solid #ffff00; color: #ffff00; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; font-size: 1.5rem; }
-        #sidebar { position: absolute; top: 0; left: -300px; width: 280px; height: 100%; background: rgba(0,0,0,0.9); border-right: 3px solid #ffff00; padding: 30px 20px; box-sizing: border-box; transition: 0.35s; z-index: 99; color: white; }
+        #settings-gear { position: absolute; top: 15px; left: 15px; width: 40px; height: 40px; background: #222; border: 1px solid #ffff00; color: #ffff00; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; font-size: 1.2rem; }
+        #sidebar { position: absolute; top: 0; left: -300px; width: 280px; height: 100%; background: rgba(0,0,0,0.95); border-right: 3px solid #ffff00; padding: 30px 20px; box-sizing: border-box; transition: 0.3s; z-index: 99; color: white; }
         #sidebar.open { left: 0; }
 
-        input { width: 100%; padding: 12px; background: #111; border: 2px solid #ffff00; color: #fff; font-family: inherit; margin-bottom: 15px; box-sizing: border-box; font-size: 1rem; }
-        button { width: 100%; padding: 12px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: inherit; text-transform: uppercase; }
+        input { width: 100%; padding: 10px; background: #000; border: 1px solid #ffff00; color: #fff; font-family: inherit; margin-bottom: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: inherit; }
 
-        /* Weather Data */
+        /* Weather Data Overlay */
         #data-layer { position: absolute; inset: 0; z-index: 2; color: white; text-shadow: 2px 2px #000; pointer-events: none; }
         .header { position: absolute; top: 12%; left: 10%; color: #ffff00; font-size: 1.8rem; }
         .city { position: absolute; top: 22%; left: 10%; font-size: 2.2rem; }
@@ -42,32 +39,29 @@
 
     <div id="viewport">
         <div id="settings-gear" onclick="toggleSidebar()">⚙</div>
-        
         <div id="sidebar">
-            <div style="color:#ffff00; margin-bottom:20px; font-size: 1.2rem;">STATION CONTROL</div>
-            <input type="text" id="city-input" placeholder="ZIP OR CITY NAME">
-            <button onclick="manualSearch()">SYNC SATELLITE</button>
-            <div id="status" style="margin-top:20px; font-size: 0.8rem; color: #00ffff;">SYSTEM: READY</div>
+            <div style="color:#ffff00; margin-bottom:15px;">Station Settings</div>
+            <input type="text" id="city-input" placeholder="City or Zip Code">
+            <button onclick="manualSearch()">Sync Data</button>
+            <div id="status" style="margin-top:20px; font-size: 0.8rem; color: #00ffff;">System: Open-Meteo Live</div>
         </div>
 
         <img id="bg-img" src="https://wsbylunv.neocities.org/ws4000_bg.png">
 
         <div id="data-layer">
-            <div class="header">CURRENT CONDITIONS</div>
-            <div id="city-out" class="city">WAITING FOR DATA...</div>
+            <div class="header">Current Conditions</div>
+            <div id="city-out" class="city">Waiting...</div>
             <div class="temp"><span id="temp-num">--</span>°</div>
             <div class="stats-grid">
-                <div>WIND: <span id="wind">--</span> MPH</div>
-                <div>HUMIDITY: <span id="hum">--</span>%</div>
-                <div>DEW POINT: <span id="dew">--</span>°</div>
-                <div>PRESSURE: <span id="press">--</span> IN</div>
+                <div>Wind: <span id="wind">--</span> mph</div>
+                <div>Humidity: <span id="hum">--</span>%</div>
+                <div>Dew Point: <span id="dew">--</span>°</div>
+                <div>Pressure: <span id="press">--</span> in</div>
             </div>
         </div>
     </div>
 
     <script>
-        const API_KEY = "YOUR_OPENWEATHER_API_KEY"; // PUT YOUR KEY HERE
-
         function toggleSidebar() { 
             const s = document.getElementById('sidebar');
             s.classList.toggle('open');
@@ -75,47 +69,60 @@
         }
 
         async function init() {
+            await document.fonts.load('12pt "Star4000"');
+            // Try auto-location first
             navigator.geolocation.getCurrentPosition(
-                (p) => fetchWeather(`lat=${p.coords.latitude}&lon=${p.coords.longitude}`),
+                (p) => updateWeather(p.coords.latitude, p.coords.longitude, "Your Area"),
                 () => { toggleSidebar(); }
             );
         }
 
         async function manualSearch() {
-            const val = document.getElementById('city-input').value.trim();
-            if(!val) return;
-            document.getElementById('status').textContent = "SYSTEM: SYNCING...";
-            
-            // Logic: Is it a ZIP (5 digits) or a City Name?
-            const isZip = /^\d{5}$/.test(val);
-            const query = isZip ? `zip=${val},US` : `q=${val}`;
-            
-            fetchWeather(query);
+            const query = document.getElementById('city-input').value.trim();
+            if(!query) return;
+            document.getElementById('status').textContent = "Locating...";
+
+            try {
+                // Get lat/lon from city name using free geocoding
+                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1&language=en&format=json`);
+                const geoData = await geoRes.json();
+                
+                if(geoData.results && geoData.results.length > 0) {
+                    const loc = geoData.results[0];
+                    updateWeather(loc.latitude, loc.longitude, loc.name);
+                } else {
+                    document.getElementById('status').textContent = "Error: City not found";
+                }
+            } catch(e) {
+                document.getElementById('status').textContent = "Error: Search failed";
+            }
         }
 
-        async function fetchWeather(query) {
+        async function updateWeather(lat, lon, name) {
             try {
-                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?${query}&units=imperial&appid=${API_KEY}`);
-                const d = await res.json();
+                // Fetch real data from Open-Meteo
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&pressure_unit=inch`;
+                const res = await fetch(url);
+                const data = await res.json();
+                const cur = data.current;
 
-                if(d.cod !== 200) {
-                    document.getElementById('status').textContent = `ERROR: ${d.message.toUpperCase()}`;
-                    return;
-                }
-
-                document.getElementById('city-out').textContent = d.name.toUpperCase();
-                document.getElementById('temp-num').textContent = Math.round(d.main.temp);
-                document.getElementById('hum').textContent = d.main.humidity;
-                document.getElementById('wind').textContent = Math.round(d.wind.speed);
-                document.getElementById('press').textContent = (d.main.pressure * 0.02953).toFixed(2);
+                // Update UI
+                document.getElementById('city-out').textContent = name;
+                document.getElementById('temp-num').textContent = Math.round(cur.temperature_2m);
+                document.getElementById('wind').textContent = Math.round(cur.wind_speed_10m);
+                document.getElementById('hum').textContent = cur.relative_humidity_2m;
+                document.getElementById('press').textContent = cur.surface_pressure.toFixed(2);
                 
-                const dew = d.main.temp - ((100 - d.main.humidity) / 5);
+                // Dew point approximation
+                const t = cur.temperature_2m;
+                const rh = cur.relative_humidity_2m;
+                const dew = t - ((100 - rh) / 5);
                 document.getElementById('dew').textContent = Math.round(dew);
-                
-                document.getElementById('status').textContent = "SYSTEM: ONLINE";
+
+                document.getElementById('status').textContent = "System: Online";
                 if(document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
             } catch(e) {
-                document.getElementById('status').textContent = "SYSTEM: API TIMEOUT";
+                document.getElementById('status').textContent = "Error: Data Sync Failed";
             }
         }
     </script>
