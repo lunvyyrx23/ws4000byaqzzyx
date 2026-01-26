@@ -1,62 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <style>
-    /* FORCING THE FONT LOAD */
+    /* 1. COMPLETELY WIPE BROWSER DEFAULTS */
+    * {
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+        font-family: 'Star4000', sans-serif !important;
+        -webkit-font-smoothing: none;
+    }
+
     @font-face {
         font-family: 'Star4000';
         src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
-        font-weight: normal;
-        font-style: normal;
     }
 
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
-        overflow: hidden;
-        /* THE FULL BACKGROUND IMAGE */
+    /* 2. FORCE THE BACKGROUND TO THE EDGE OF THE GLASS */
+    html, body {
+        width: 100vw !important;
+        height: 100vh !important;
+        background-color: #000;
+        overflow: hidden !important;
+        position: fixed; /* Prevents scrolling/bouncing on iPad */
+    }
+
+    body {
+        /* This is the key: Background applied to the absolute base layer */
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
         background-size: 100% 100% !important;
-        background-position: center !important;
+        background-position: top left !important;
         background-repeat: no-repeat !important;
-        background-attachment: fixed;
     }
 
-    #main-container {
-        /* This keeps your text in the authentic "Safe Area" */
-        padding: 8% 10%;
-        height: 100%;
-        box-sizing: border-box;
+    /* 3. POSITION CONTENT WITHOUT CREATING NEW BOXES */
+    #content-layer {
+        position: absolute;
+        top: 10%;
+        left: 10%;
+        width: 80%;
+        height: 80%;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
-    }
-
-    /* FORCING STAR4000 ON EVERYTHING */
-    * {
-        font-family: 'Star4000', sans-serif !important;
         color: white;
-        -webkit-font-smoothing: none; /* Keeps that crunchy retro look */
     }
 
-    .yellow-title {
+    .yellow-header {
         color: #ffff00 !important;
         font-size: 3.5rem;
         text-shadow: 4px 4px #000;
         text-transform: uppercase;
-        margin: 0;
+        margin-bottom: 20px !important;
     }
 
-    #temp-value {
+    #temp {
         font-size: 13rem;
         text-shadow: 7px 7px #000;
-        margin: 20px 0;
-        line-height: 1;
+        margin-bottom: 20px !important;
+        line-height: 0.9;
     }
 
-    .weather-details {
+    .data-text {
         font-size: 2.8rem;
         line-height: 1.5;
         text-shadow: 4px 4px #000;
@@ -66,12 +72,11 @@
 </head>
 <body>
 
-    <div id="main-container">
-        <div class="yellow-title">Current Conditions</div>
+    <div id="content-layer">
+        <div class="yellow-header">Current Conditions</div>
+        <div id="temp">36°</div>
         
-        <div id="temp-value">36°</div>
-        
-        <div class="weather-details">
+        <div class="data-text">
             MIST / LIGHT RAIN<br>
             WIND: CALM<br>
             HUMIDITY: 92%<br>
