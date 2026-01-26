@@ -2,84 +2,98 @@
 <html lang="en">
 <head>
 <style>
-    /* 1. Reset and Font Force */
+    /* 1. FORCE THE FONT TO OVERRIDE EVERYTHING */
+    @font-face {
+        font-family: 'Star4000';
+        src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype') !important;
+        font-weight: normal !important;
+        font-style: normal !important;
+    }
+
+    /* 2. STRIP ALL BROWSER STYLES AND FORCE NORMAL TEXT */
     * {
         margin: 0 !important;
         padding: 0 !important;
-        border: none !important;
+        border: 0 !important;
+        outline: 0 !important;
         box-sizing: border-box !important;
         font-family: 'Star4000', sans-serif !important;
-        text-transform: none !important; 
+        text-transform: none !important;
+        font-variant: normal !important;
+        -webkit-user-select: none !important; /* Prevents text highlighting on iPad */
+        user-select: none !important;
     }
 
-    @font-face {
-        font-family: 'Star4000';
-        src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-    }
-
+    /* 3. FORCE SCREEN REAL ESTATE */
     html, body {
+        width: 100vw !important;
+        height: 100 vh !important;
+        min-height: 100% !important;
+        overflow: hidden !important;
+        background-color: #000 !important;
+        position: fixed !important; /* Forces layout to lock to glass edges */
+    }
+
+    /* 4. FORCE THE BACKGROUND TO BE THE ENTIRE SCREEN */
+    body {
+        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
+        background-position: center center !important;
+        background-size: 100% 100% !important; /* Stretches to every corner */
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* 5. FORCE THE CONTENT CONTAINER */
+    #main-container {
         width: 100% !important;
         height: 100% !important;
-        overflow: hidden !important;
-        background-color: #000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    body {
-        /* Force image to 100% of the container */
-        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
-        background-repeat: no-repeat !important;
-        background-position: center center !important; 
-        background-size: 100% 100% !important; 
-    }
-
-    /* 2. Text Container set to 100% */
-    #main-container {
-        width: 100%; 
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        padding: 6% 8%; /* Adjusts the text safe-area */
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 6% 8% !important;
     }
 
     .header {
         color: #ffff00 !important;
-        font-size: 3.2rem;
-        text-shadow: 4px 4px #000;
-        margin-bottom: 4% !important;
+        font-size: clamp(2rem, 5vw, 3.5rem) !important;
+        text-shadow: 4px 4px #000 !important;
+        margin-bottom: 5% !important;
+        width: 100% !important;
     }
 
-    .data-container {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
+    .data-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+        width: 100% !important;
+    }
+
+    .temp-box {
+        display: flex !important;
+        flex-direction: column !important;
     }
 
     #temp-value {
-        font-size: 13rem;
-        line-height: 0.9;
-        text-shadow: 8px 8px #000;
-        color: white;
+        font-size: clamp(6rem, 18vw, 14rem) !important;
+        line-height: 0.8 !important;
+        text-shadow: 8px 8px #000 !important;
+        color: #fff !important;
     }
 
-    .condition-text {
-        font-size: 2.8rem;
-        text-shadow: 4px 4px #000;
-        color: white;
-        margin-top: 5px !important;
+    .condition-label {
+        font-size: clamp(1.5rem, 4vw, 3rem) !important;
+        text-shadow: 4px 4px #000 !important;
+        color: #fff !important;
+        margin-top: 10px !important;
     }
 
-    .stats-column {
-        font-size: 2.4rem;
-        line-height: 1.5;
-        text-shadow: 4px 4px #000;
-        color: white;
-        text-align: left;
+    .stats-box {
+        font-size: clamp(1.2rem, 3vw, 2.5rem) !important;
+        line-height: 1.5 !important;
+        text-shadow: 4px 4px #000 !important;
+        color: #fff !important;
+        text-align: left !important;
     }
 </style>
 </head>
@@ -88,13 +102,13 @@
     <div id="main-container">
         <div class="header">Current Conditions</div>
 
-        <div class="data-container">
-            <div class="temp-section">
+        <div class="data-row">
+            <div class="temp-box">
                 <div id="temp-value">36°</div>
-                <div class="condition-text">Mist</div>
+                <div class="condition-label">Mist</div>
             </div>
 
-            <div class="stats-column">
+            <div class="stats-box">
                 Wind: Calm<br>
                 Humidity: 92%<br>
                 Dewpoint: 34°<br>
