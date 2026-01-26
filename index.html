@@ -2,42 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>WeatherStar 4000+</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherStar 4000+ Emulator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="screen">
-    <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png">
-    
-    <div id="header-container">
-        <div id="page-title">Current<br>Conditions</div>
-        <div id="clock-section">
-            <div id="time">--:--:-- --</div>
-            <div id="date">--- --- --</div>
-        </div>
-    </div>
-
-    <div id="overlay">
-        <div id="city-name">INITIALIZING...</div>
+    <div id="screen">
+        <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png" alt="Star 4000 Background">
         
-        <div id="main-content">
-            <div class="column-left">
-                <div id="big-temp">--°</div>
-                <div id="condition-text">LOADING...</div>
-                <img id="weather-icon" src="https://wsbylunv.neocities.org/sunny.png">
-                <div id="wind-line">Wind: <span id="wind-val">CALM</span></div>
+        <div id="header-area">
+            <div id="page-title">Current<br>Conditions</div>
+            <div id="clock-box">
+                <div id="time">--:--:-- --</div>
+                <div id="date">--- --- --</div>
             </div>
+        </div>
 
-            <div class="column-right">
-                <div class="data-row"><span class="label">Humidity:</span> <span id="hum">--%</span></div>
-                <div class="data-row"><span class="label">Dewpoint:</span> <span id="dew">--°</span></div>
-                <div class="data-row"><span class="label">Ceiling:</span> <span id="ceil">UNLIMITED</span></div>
-                <div class="data-row"><span class="label">Visibility:</span> <span id="vis">-- MI.</span></div>
-                <div class="data-row"><span class="label">Pressure:</span> <span id="pres">--.--</span></div>
+        <div id="overlay">
+            <div id="station-name">INITIALIZING STATION...</div>
+            
+            <div id="weather-grid">
+                <div class="col-left">
+                    <div id="big-temp">--°</div>
+                    <div id="cond-text">LOADING</div>
+                    <img id="ws-icon" src="https://wsbylunv.neocities.org/sunny.png">
+                    <div id="wind-row">Wind: <span id="wind-val">CALM</span></div>
+                </div>
+
+                <div class="col-right">
+                    <div class="data-item"><span class="lbl">Humidity:</span> <span id="hum">--%</span></div>
+                    <div class="data-item"><span class="lbl">Dewpoint:</span> <span id="dew">--°</span></div>
+                    <div class="data-item"><span class="lbl">Ceiling:</span> <span id="ceil">UNLIMITED</span></div>
+                    <div class="data-item"><span class="lbl">Visibility:</span> <span id="vis">-- MI.</span></div>
+                    <div class="data-item"><span class="lbl">Pressure:</span> <span id="pres">--.--</span></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <script src="script.js"></script>
 </body>
 </html>
