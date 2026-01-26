@@ -9,12 +9,8 @@
         border: none !important;
         box-sizing: border-box !important;
         font-family: 'Star4000', sans-serif !important;
-        /* Force normal text casing */
         text-transform: none !important; 
         font-variant: normal !important;
-        /* Standard rendering */
-        -webkit-font-smoothing: auto !important;
-        -moz-osx-font-smoothing: auto !important;
     }
 
     @font-face {
@@ -32,8 +28,10 @@
     }
 
     body {
+        /* Centering the background image */
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
-        background-size: 100% 100% !important;
+        background-size: cover !important; /* This ensures the space is filled */
+        background-position: center center !important; /* This forces it to the middle */
         background-repeat: no-repeat !important;
         display: flex;
         flex-direction: column;
