@@ -2,62 +2,67 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<style>
-    /* 1. Global Reset & Font Loading */
+<meta name="viewport" content="width=1091"> <style>
+    /* 1. Enhanced Font Loading */
     @font-face {
         font-family: 'Star4000';
-        /* Ensure the URL is exactly as provided in your storage */
         src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
-        font-display: swap;
+        font-weight: normal;
+        font-style: normal;
     }
 
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        /* Force the font everywhere */
-        font-family: 'Star4000', Arial, sans-serif !important;
-        text-transform: none;
     }
 
     html, body {
         width: 100%;
         height: 100%;
-        background-color: #111; /* Dark background so the screen pops */
+        background-color: #000;
+        /* Centers the large screen on your PC monitor */
         display: flex;
         justify-content: center;
-        align-items: center;
-        overflow: auto; /* Allow scrolling if your monitor is smaller than the 820px height */
+        align-items: flex-start; 
+        overflow-x: auto; 
     }
 
-    /* 2. The Master Screen (Full PC Size) */
+    /* 2. The Full-Size Container */
     #ws4000-screen {
-        width: 1091px !important; 
-        height: 820px !important;
-        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png');
-        background-size: contain; 
-        background-position: center;
-        background-repeat: no-repeat;
         position: relative;
-        box-shadow: 0 0 50px #000; /* Adds a nice depth on PC */
-        flex-shrink: 0;
+        width: 1091px; 
+        height: 820px;
+        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png');
+        background-size: cover; /* Ensures BG fills every pixel of the 1091x820 area */
+        background-repeat: no-repeat;
+        background-position: center;
+        flex-shrink: 0; /* Prevents it from getting squashed */
     }
 
-    /* 3. Elements Positioning */
+    /* 3. Forced Text Scaling & Font */
+    #ws4000-screen div, 
+    #ws4000-screen span {
+        font-family: 'Star4000', sans-serif !important;
+        -webkit-font-smoothing: none; /* Keeps it pixel-perfect like the original */
+    }
+
     .header {
         color: #ffff00;
-        font-size: 3rem;
+        font-size: 55px; /* Switched to PX for absolute sizing on PC */
         text-shadow: 4px 4px #000;
         position: absolute;
         top: 50px;   
         left: 350px; 
+        line-height: 1.1;
     }
 
+    /* 4. Weather Icon (Now at 385px down) */
     #weather-icon {
         position: absolute;
         top: 385px; 
         left: 125px;
-        width: 150px;
+        width: 180px; /* Slightly bigger for PC visibility */
         height: auto;
     }
 
@@ -66,26 +71,18 @@
         top: 580px; 
         left: 125px;
         color: #fff;
-        font-size: 2.2rem;
+        font-size: 35px;
         text-shadow: 4px 4px #000;
         white-space: pre;
     }
 
-    .location-label {
-        position: absolute;
-        top: 220px; 
-        right: 120px; 
-        color: #ffff00;
-        font-size: 2.2rem;
-        text-shadow: 4px 4px #000;
-    }
-
+    /* 5. Main Conditions Area */
     #temp-value {
         position: absolute;
-        top: 200px;
+        top: 180px;
         left: 100px; 
-        font-size: 8.8rem;
-        text-shadow: 8px 8px #000;
+        font-size: 140px;
+        text-shadow: 10px 10px #000;
         color: #fff;
     }
 
@@ -93,19 +90,31 @@
         position: absolute;
         top: 335px; 
         left: 130px; 
-        font-size: 1.5rem;
+        font-size: 30px;
         text-shadow: 4px 4px #000;
         color: #fff;
+    }
+
+    /* 6. Stats & Location */
+    .location-label {
+        position: absolute;
+        top: 220px; 
+        right: 120px; 
+        color: #ffff00;
+        font-size: 38px;
+        text-shadow: 4px 4px #000;
+        text-align: right;
     }
 
     .stats-box {
         position: absolute;
         top: 295px; 
         right: 370px; 
-        font-size: 2.2rem;
+        font-size: 38px;
         line-height: 1.6;
         text-shadow: 4px 4px #000;
         color: #fff;
+        text-align: left;
     }
 
 </style>
