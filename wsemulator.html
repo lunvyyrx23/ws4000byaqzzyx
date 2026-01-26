@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WeatherStar 4000+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="screen">
+        <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png" alt="Background">
+        
+        <div id="overlay">
+            <div id="city-name">SYSTEM READY</div>
+            <div id="weather-box">
+                <div id="status" class="pulse">PRESS / TO SEARCH</div>
+                
+                <div id="details" style="display:none;">
+                    <div class="data-row">
+                        <span class="label">TEMP:</span> 
+                        <span id="temp">--</span>°F
+                    </div>
+                    <div class="data-row">
+                        <span class="label">COND:</span> 
+                        <span id="cond">--</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">WIND:</span> 
+                        <span id="wind">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
