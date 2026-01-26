@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <style>
-    /* 1. RESET AND FORCE NORMAL CASING */
+    /* 1. Reset and Font Force */
     * {
         margin: 0 !important;
         padding: 0 !important;
@@ -10,7 +10,6 @@
         box-sizing: border-box !important;
         font-family: 'Star4000', sans-serif !important;
         text-transform: none !important; 
-        font-variant: normal !important;
     }
 
     @font-face {
@@ -28,17 +27,19 @@
     }
 
     body {
-        /* Centering the background image */
+        /* FORCING THE CENTER ANCHOR */
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
-        background-size: cover !important; /* This ensures the space is filled */
-        background-position: center center !important; /* This forces it to the middle */
         background-repeat: no-repeat !important;
+        background-position: center center !important; /* Force to the dead center */
+        background-size: cover !important; /* Ensures it fills the screen from the center out */
+        background-attachment: fixed !important; /* Keeps it from shifting during touch/scroll */
+        
         display: flex;
         flex-direction: column;
         padding: 6% 8%;
     }
 
-    /* 2. HEADERS & DATA */
+    /* 2. Text Layout */
     .header {
         color: #ffff00 !important;
         font-size: 3.2rem;
