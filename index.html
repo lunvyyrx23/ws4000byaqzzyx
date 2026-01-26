@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WS4000 All-In-One</title>
+    <title>WS4000 Universal</title>
     <style>
-        /* --- 1. FONTS & THEMES --- */
         @font-face {
             font-family: "Star4000";
             src: url("https://wsbylunv.neocities.org/Star4000.ttf") format("truetype");
@@ -20,25 +19,25 @@
             font-family: "Star4000", sans-serif;
             background: var(--page-bg);
             display: flex; flex-direction: column; align-items: center;
-            transition: background 0.5s ease;
-            touch-action: manipulation;
+            overflow: hidden;
         }
 
-        /* --- 2. THE SCREEN CONTAINER --- */
         #page-wrapper {
-            width: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 20px; box-sizing: border-box;
         }
 
         #screen {
             position: relative;
-            width: 90vw; max-width: 800px;
+            width: 95vw; max-width: 850px;
             aspect-ratio: 4/3;
             background: black;
-            border: 0.8vw solid #444;
-            border-radius: 1.5vw;
+            border: 6px solid #333;
+            border-radius: 15px;
             overflow: hidden;
-            container-type: size; /* MAGIC: Makes text scale to the BOX, not the screen */
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            container-type: size; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
         }
 
         #screen.full-mode {
@@ -46,128 +45,46 @@
         }
 
         #bg { position: absolute; width: 100%; height: 100%; object-fit: fill; z-index: 1; }
+        #content-layer { position: absolute; width: 100%; height: 100%; z-index: 10; color: white; pointer-events: none; }
 
-        #content-layer {
-            position: absolute; width: 100%; height: 100%; z-index: 10;
-            color: white; pointer-events: none;
-        }
-
-        /* --- 3. SCALABLE TEXT (cqw units keep everything in place) --- */
-        #header-area {
-            position: absolute; top: 8%; left: 35%; right: 5%;
-            display: flex; justify-content: space-between;
-        }
-
+        /* --- TEXT SCALING --- */
+        #header-area { position: absolute; top: 8%; left: 35%; right: 5%; display: flex; justify-content: space-between; }
         #page-title { color: #ffff00; font-size: 6.5cqw; line-height: 0.9; text-shadow: 0.4cqw 0.4cqw black; }
         #clock-box { text-align: right; font-size: 3.8cqw; text-shadow: 0.3cqw 0.3cqw black; }
 
         #data-container { position: absolute; top: 38%; left: 10%; right: 10%; }
-
         #station-name { color: #ffff00; text-align: right; font-size: 5.5cqw; text-shadow: 0.4cqw 0.4cqw black; margin-bottom: 4%; }
         #big-temp { font-size: 18cqw; text-shadow: 0.8cqw 0.8cqw black; line-height: 0.8; }
-        #cond-text { font-size: 6.5cqw; text-shadow: 0.4cqw 0.4cqw black; margin: 1.5cqw 0; }
+        #cond-text { font-size: 6.5cqw; text-shadow: 0.4cqw 0.4cqw black; margin: 1.5cqw 0; text-transform: uppercase; }
         #wind-line { font-size: 4.5cqw; color: #00ffff; text-shadow: 0.3cqw 0.3cqw black; }
 
-        /* --- 4. UI CONTROLS --- */
-        #controls {
-            margin-top: 20px; padding: 15px; background: var(--panel-bg);
-            border-radius: 12px; display: flex; flex-direction: column; gap: 10px; align-items: center;
-        }
-        .search-row { display: flex; gap: 5px; }
-        input { padding: 12px; font-size: 16px; border-radius: 8px; border: none; width: 180px; }
-        .btn-group { display: flex; gap: 10px; }
+        #controls { margin-top: 20px; padding: 15px; background: var(--panel-bg); border-radius: 12px; display: flex; flex-direction: column; gap: 10px; align-items: center; z-index: 50; }
+        input { padding: 12px; font-size: 16px; border-radius: 8px; border: none; width: 200px; }
         button { padding: 10px 20px; background: #2255aa; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body class="light-mode">
 
-    <div id="page-wrapper">
-        <div id="screen">
-            <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png">
-            <div id="content-layer">
-                <div id="header-area">
-                    <div id="page-title">Current<br>Conditions</div>
-                    <div id="clock-box">
-                        <div id="time">--:--:-- --</div>
-                        <div id="date">--- --- --</div>
-                    </div>
-                </div>
-                <div id="data-container">
-                    <div id="station-name">INITIALIZING...</div>
-                    <div id="main-display">
-                        <div id="big-temp">--°</div>
-                        <div id="cond-text">PLEASE WAIT</div>
-                        <div id="wind-line">Wind: <span id="wind-val">--</span></div>
-                    </div>
+<div id="page-wrapper">
+    <div id="screen">
+        <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png">
+        <div id="content-layer">
+            <div id="header-area">
+                <div id="page-title">Current<br>Conditions</div>
+                <div id="clock-box">
+                    <div id="time">--:--:-- --</div>
+                    <div id="date">--- --- --</div>
                 </div>
             </div>
-        </div>
-
-        <div id="controls">
-            <div class="search-row">
-                <input type="text" id="city-input" placeholder="Enter City/Zip...">
-                <button onclick="manualSearch()">GO</button>
-            </div>
-            <div class="btn-group">
-                <button id="mode-btn" onclick="toggleDarkMode()">Dark Mode</button>
-                <button onclick="toggleFullscreen()">Full Screen</button>
+            <div id="data-container">
+                <div id="station-name">CONNECTING...</div>
+                <div id="main-display">
+                    <div id="big-temp">--°</div>
+                    <div id="cond-text">WAITING FOR DATA</div>
+                    <div id="wind-line">Wind: <span id="wind-val">--</span></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        const PROXY = "https://api.allorigins.win/get?url=";
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('time').textContent = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' }).toUpperCase();
-            document.getElementById('date').textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit' }).toUpperCase().replace(/,/g, "");
-        }
-        setInterval(updateClock, 1000);
-
-        async function fetchWeather(lat, lon) {
-            try {
-                const pointUrl = `https://api.weather.gov/points/${lat},${lon}`;
-                const pRes = await fetch(`${PROXY}${encodeURIComponent(pointUrl)}`);
-                const pData = JSON.parse((await pRes.json()).contents);
-                
-                const fRes = await fetch(`${PROXY}${encodeURIComponent(pData.properties.forecast)}`);
-                const fData = JSON.parse((await fRes.json()).contents);
-                const cur = fData.properties.periods[0];
-
-                document.getElementById('station-name').textContent = pData.properties.relativeLocation.properties.city.toUpperCase();
-                document.getElementById('big-temp').textContent = cur.temperature + "°";
-                document.getElementById('cond-text').textContent = cur.shortForecast.toUpperCase();
-                document.getElementById('wind-val').textContent = `${cur.windDirection} ${cur.windSpeed}`;
-            } catch (err) {
-                document.getElementById('station-name').textContent = "STATION ERROR";
-            }
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('light-mode');
-            document.body.classList.toggle('dark-mode');
-        }
-
-        function toggleFullscreen() {
-            document.getElementById('screen').classList.toggle('full-mode');
-        }
-
-        async function manualSearch() {
-            const val = document.getElementById('city-input').value;
-            if(!val) return;
-            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${val}`);
-            const data = await res.json();
-            if(data[0]) fetchWeather(data[0].lat, data[0].lon);
-        }
-
-        window.onload = () => {
-            updateClock();
-            navigator.geolocation.getCurrentPosition(
-                p => fetchWeather(p.coords.latitude, p.coords.longitude),
-                () => fetchWeather(40.7128, -74.0060) // Default NYC
-            );
-        };
-    </script>
-</body>
-</html>
+    <div id="controls
