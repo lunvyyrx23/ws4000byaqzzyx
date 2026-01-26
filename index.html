@@ -75,76 +75,88 @@
         </div>
     </div>
 
-    <script>
-        const proxy = "https://corsproxy.io/?"; 
-        const userAgent = "WS4000-Sim (user@example.com)";
+<script>
+    const proxy = "https://corsproxy.io/?"; 
+    const userAgent = "WS4000-Sim (your-email@example.com)";
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-        async function init() {
-            await document.fonts.load('12pt "Star4000"');
-            navigator.geolocation.getCurrentPosition(
-                (p) => updateStation(p.coords.latitude, p.coords.longitude, "Local Area"),
-                () => toggleSidebar()
-            );
-        }
+    async function init() {
+        await document.fonts.load('12pt "Star4000"');
+        navigator.geolocation.getCurrentPosition(
+            (p) => updateStation(p.coords.latitude, p.coords.longitude, "Local Area"),
+            () => toggleSidebar()
+        );
+    }
 
-        async function manualSearch() {
-            const query = document.getElementById('city-input').value.trim();
-            if(!query) return;
-            // Using geocoding-api.open-meteo.com as it's the fastest free way to get coords
-            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1`);
-            const data = await res.json();
-            if(data.results) {
-                const loc = data.results[0];
-                updateStation(loc.latitude, loc.longitude, loc.name);
+    async function updateStation(lat, lon, name) {
+        document.getElementById('status').textContent = "Updating Satellite...";
+        try {
+            // 1. Get NWS Point
+            const ptRes = await fetch(`${proxy}https://api.weather.gov/points/${lat},${lon}`, { headers: {"User-Agent": userAgent} });
+            const pt = await ptRes.json();
+            
+            // 2. Get Nearest Airport Station
+            const stRes = await fetch(`${proxy}${pt.properties.observationStations}`, { headers: {"User-Agent": userAgent} });
+            const st = await stRes.json();
+            const obsRes = await fetch(`${proxy}${st.features[0].id}/observations/latest`, { headers: {"User-Agent": userAgent} });
+            const obs = await obsRes.json();
+            const cur = obs.properties;
+
+            // --- UNIT CONVERSION LOGIC ---
+            const toF = (val, unit) => {
+                if (val === null) return null;
+                return unit.includes('degC') ? (val * 9/5) + 32 : val;
+            };
+
+            const tempF = toF(cur.temperature.value, cur.temperature.unitCode);
+            const windMph = (cur.windSpeed.value * 2.236) || 0;
+            const hum = Math.round(cur.relativeHumidity.value);
+
+            // --- WIND CHILL (The "Feels Like" Fix) ---
+            let feelsLike = tempF;
+            if (tempF <= 50 && windMph > 3) {
+                feelsLike = 35.74 + (0.6215 * tempF) - (35.75 * Math.pow(windMph, 0.16)) + (0.4275 * tempF * Math.pow(windMph, 0.16));
             }
-        }
 
-        async function updateStation(lat, lon, name) {
-            document.getElementById('status').textContent = "Handshaking NWS...";
-            try {
-                // 1. Get Point Metadata
-                const ptRes = await fetch(`${proxy}https://api.weather.gov/points/${lat},${lon}`, { headers: {"User-Agent": userAgent} });
-                const pt = await ptRes.json();
-                
-                // 2. Get Observations
-                const stRes = await fetch(`${proxy}${pt.properties.observationStations}`, { headers: {"User-Agent": userAgent} });
-                const st = await stRes.json();
-                const obsRes = await fetch(`${proxy}${st.features[0].id}/observations/latest`, { headers: {"User-Agent": userAgent} });
-                const obs = await obsRes.json();
-                const cur = obs.properties;
+            // --- UPDATE THE SCREEN ---
+            document.getElementById('city-out').textContent = name;
+            document.getElementById('temp-num').textContent = Math.round(tempF);
+            document.getElementById('wind').textContent = Math.round(windMph);
+            document.getElementById('hum').textContent = hum + "%";
+            document.getElementById('press').textContent = (cur.barometricPressure.value * 0.000295).toFixed(2);
+            document.getElementById('dew').textContent = Math.round(toF(cur.dewpoint.value, cur.dewpoint.unitCode));
 
-                // Update Display
-                document.getElementById('city-out').textContent = name;
-                document.getElementById('temp-num').textContent = Math.round((cur.temperature.value * 9/5) + 32);
-                document.getElementById('hum').textContent = Math.round(cur.relativeHumidity.value);
-                document.getElementById('wind').textContent = Math.round(cur.windSpeed.value * 0.621 || 0);
-                document.getElementById('press').textContent = (cur.barometricPressure.value * 0.000295).toFixed(2);
-                document.getElementById('dew').textContent = Math.round((cur.dewpoint.value * 9/5) + 32);
-
-                // 3. CHECK ALERTS (The trick)
-                checkAlerts(lat, lon);
-
-                document.getElementById('status').textContent = "Link Established";
-                if(document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
-            } catch(e) { document.getElementById('status').textContent = "Connection Error"; }
-        }
-
-        async function checkAlerts(lat, lon) {
-            const alertRes = await fetch(`${proxy}https://api.weather.gov/alerts/active?point=${lat},${lon}`, { headers: {"User-Agent": userAgent} });
-            const alertData = await alertRes.json();
-            const banner = document.getElementById('alert-banner');
-            const text = document.getElementById('alert-text');
-
-            if(alertData.features && alertData.features.length > 0) {
-                const headline = alertData.features[0].properties.headline;
-                text.textContent = `*** HAZARDOUS WEATHER: ${headline.toUpperCase()} ***`;
-                banner.style.display = "block";
+            // Show "Feels Like" only if it's colder than the air temp
+            const statusDiv = document.getElementById('status');
+            if (Math.round(feelsLike) < Math.round(tempF)) {
+                statusDiv.innerHTML = `System: Online | Feels Like: <span style="color:#fff">${Math.round(feelsLike)}°</span>`;
             } else {
-                banner.style.display = "none";
+                statusDiv.textContent = "System: Online";
             }
+
+            // Check for Alerts (Ice Storm Warning etc)
+            checkAlerts(lat, lon);
+            
+            if(document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
+        } catch(e) { document.getElementById('status').textContent = "Sync Failed - Retrying"; }
+    }
+
+    async function checkAlerts(lat, lon) {
+        const alertRes = await fetch(`${proxy}https://api.weather.gov/alerts/active?point=${lat},${lon}`, { headers: {"User-Agent": userAgent} });
+        const alertData = await alertRes.json();
+        const banner = document.getElementById('alert-banner');
+        const text = document.getElementById('alert-text');
+
+        if(alertData.features && alertData.features.length > 0) {
+            const headline = alertData.features[0].properties.headline;
+            // Force normal case but keep keywords bold
+            text.textContent = `** ${headline} **`;
+            banner.style.display = "block";
+        } else {
+            banner.style.display = "none";
         }
-    </script>
+    }
+</script>
 </body>
 </html>
