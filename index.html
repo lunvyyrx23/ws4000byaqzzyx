@@ -37,7 +37,6 @@
         background-position: center !important;
         background-repeat: no-repeat !important;
         position: relative !important;
-        transform-origin: center center;
     }
 
     /* 3. Mobile Scaling */
@@ -56,16 +55,28 @@
         line-height: 1.1 !important;
     }
 
-    /* 5. WEATHER ICON: Up 50px (435 -> 385), Right 25px (100 -> 125) */
+    /* 5. WEATHER ICON (Top 335, Left 125) */
     #weather-icon {
         position: absolute !important;
-        top: 385px !important; 
+        top: 335px !important; 
         left: 125px !important;
         width: 150px !important;
         height: auto !important;
     }
 
-    /* 6. YELLOW LABEL */
+    /* 6. NEW WIND TEXT: 45px below Cloudy.gif (335 + 150 icon height approx + 45 = 530) */
+    /* Adjusting 'top' based on the icon position + spacing */
+    .icon-subtext {
+        position: absolute !important;
+        top: 530px !important; 
+        left: 125px !important;
+        color: #fff !important;
+        font-size: 2.2rem !important;
+        text-shadow: 4px 4px #000 !important;
+        white-space: pre !important; /* Preserves the spacing you typed */
+    }
+
+    /* 7. YELLOW LABEL */
     .location-label {
         position: absolute !important;
         top: 220px !important; 
@@ -75,18 +86,16 @@
         text-shadow: 4px 4px #000 !important;
     }
 
-    /* 7. TEMPERATURE */
+    /* 8. TEMPERATURE & MIST */
     #temp-value {
         position: absolute !important;
         top: 200px !important;
         left: 100px !important; 
         font-size: 8.8rem !important;
-        line-height: 0.8 !important;
         text-shadow: 8px 8px #000 !important;
         color: #fff !important;
     }
 
-    /* 8. MIST */
     .condition-label {
         position: absolute !important;
         top: 310px !important; 
@@ -96,11 +105,11 @@
         color: #fff !important;
     }
 
-    /* 9. WEATHER STATS */
+    /* 9. WEATHER STATS: Moved Left by 250px (Right 120 -> Right 370) */
     .stats-box {
         position: absolute !important;
         top: 370px !important; 
-        right: 120px !important; 
+        right: 370px !important; /* Shifted left */
         font-size: 2.2rem !important;
         line-height: 1.6 !important;
         text-shadow: 4px 4px #000 !important;
@@ -115,6 +124,8 @@
         <div class="header">Current<br>Conditions</div>
 
         <img id="weather-icon" src="https://wsbylunv.neocities.org/yea/Cloudy.gif" alt="Cloudy">
+        
+        <div class="icon-subtext">Wind:      E 133</div>
 
         <div class="location-label">the summit of yoyle mountain</div>
 
@@ -125,8 +136,8 @@
             Wind: Calm<br>
             Humidity: 92%<br>
             Dewpoint: 34°<br>
-            Ceiling: Unl<br>
-            Visib: 10 Mi
+            Ceiling: 500 ft<br>
+            Visib: 13 yd
         </div>
     </div>
 
