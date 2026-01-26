@@ -5,28 +5,39 @@
     <title>WS4000 Local Station</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div id="screen">
-    <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png" alt="Star 4000 Background">
-    
-    <div id="content-layer">
-        <div id="header-area">
-            <div id="page-title">Current<br>Conditions</div>
-            <div id="clock-box">
-                <div id="time">--:--:-- --</div>
-                <div id="date">--- --- --</div>
+<body class="light-mode"> <div id="page-wrapper">
+        <div id="screen" class="mini-mode">
+            <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png">
+            <div id="content-layer">
+                <div id="header-area">
+                    <div id="page-title">Current<br>Conditions</div>
+                    <div id="clock-box">
+                        <div id="time">--:--:-- --</div>
+                        <div id="date">--- --- --</div>
+                    </div>
+                </div>
+                <div id="data-container">
+                    <div id="station-name">INITIALIZING...</div>
+                    <div id="main-display">
+                        <div id="big-temp">--°</div>
+                        <div id="cond-text">--</div>
+                        <div id="wind-line">Wind: <span id="wind-val">--</span></div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="data-container">
-            <div id="station-name">INITIALIZING...</div>
-            <div id="main-display">
-                <div id="big-temp">--°</div>
-                <div id="cond-text">--</div>
-                <div id="wind-line">Wind: <span id="wind-val">--</span></div>
+        <div id="controls">
+            <div class="search-box">
+                <input type="text" id="city-input" placeholder="Enter City or Zip...">
+                <button onclick="manualSearch()">GO</button>
+            </div>
+            <div class="button-group">
+                <button onclick="toggleDarkMode()" id="mode-btn">Dark Mode</button>
+                <button onclick="toggleFullscreen()">Full Screen</button>
             </div>
         </div>
     </div>
-</div>
+    <script src="script.js"></script>
 </body>
 </html>
