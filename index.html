@@ -5,8 +5,11 @@
     body {
         margin: 0;
         padding: 0;
-        /* The "Sunset" Background from your image */
-        background: linear-gradient(180deg, #4a148c 0%, #b71c1c 40%, #e65100 70%, #ff6f00 100%);
+        /* Using the ws4000.png as the base background */
+        background-image: url('https://ws4000.neocities.org/ws4000.png');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
         color: white;
         font-family: sans-serif;
         height: 100vh;
@@ -16,95 +19,77 @@
         overflow: hidden;
     }
 
-    /* THE SOFT LIGHT SIDEBAR (Transparent and Glowing) */
+    /* THE SOFT LIGHT SIDEBAR (Light to Blue Gradient) */
     #sidebar {
         position: fixed;
         left: 0;
         top: 0;
         width: 190px;
         height: 100%;
-        background: linear-gradient(90deg, rgba(122, 215, 240, 0.4) 0%, rgba(15, 123, 213, 0.1) 100%);
-        border-right: 2px solid rgba(255, 255, 255, 0.2);
+        /* Adjusted for the "Soft Light" look over the PNG */
+        background: linear-gradient(90deg, rgba(173, 216, 230, 0.5) 0%, rgba(30, 144, 255, 0.2) 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.3);
         padding: 25px 15px;
         z-index: 10;
-        backdrop-filter: blur(8px);
+        backdrop-filter: blur(4px);
     }
 
-    /* THE CENTERED WEATHER WINDOW (The blue box in your image) */
+    /* THE WEATHER BOX (Centered Blue Window) */
     #weather-box {
-        width: 75%;
-        height: 70%;
-        background: #1034a6; /* Deep blue from your image */
-        border: 4px solid #1a4cd1; /* Beveled edge effect */
-        box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 30px rgba(0,0,0,0.7);
+        width: 70%;
+        height: 65%;
+        background: rgba(16, 52, 166, 0.85); /* Slightly transparent to see the PNG */
+        border: 4px solid #1a4cd1;
+        box-shadow: 0 0 20px rgba(0,0,0,0.8);
         padding: 40px;
+        margin-left: 100px;
         position: relative;
-        margin-left: 100px; /* Offset to feel centered with sidebar */
     }
 
     .header-text {
-        color: #ffff00; /* Yellow text like the image */
+        color: #ffff00; /* Authentic Yellow */
         font-size: 2.5rem;
         font-weight: bold;
-        margin-bottom: 5px;
         text-shadow: 2px 2px #000;
-    }
-
-    .location-name {
-        color: #ffff00;
-        font-size: 1.8rem;
-        margin-bottom: 20px;
+        margin-bottom: 5px;
     }
 
     #temp-display {
-        font-size: 8rem;
+        font-size: 9rem;
         font-weight: bold;
         text-shadow: 4px 4px #000;
     }
 
-    /* THE BOTTOM TICKER BAR */
-    #ticker {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background: #001a4d;
-        border-top: 3px solid #fff;
-        color: #fff;
-        padding: 10px 20px;
-        font-size: 1.5rem;
-        text-align: center;
+    .stats {
+        font-size: 2rem;
+        line-height: 1.8;
+        text-shadow: 2px 2px #000;
     }
 </style>
 </head>
 <body>
 
     <div id="sidebar">
-        <div style="color: #ffaa00; font-weight: bold;">LOCAL<br>FORECAST</div>
+        <div style="color: #ffaa00; font-weight: bold; font-size: 1.2rem;">LOCAL<br>FORECAST</div>
     </div>
 
     <div id="weather-box">
         <div class="header-text">Current Conditions</div>
-        <div class="location-name">Orlando Executive Ai</div>
+        <div style="font-size: 1.8rem; margin-bottom: 20px; color: #ffff00;">Local Station Data</div>
         
         <div style="display: flex; justify-content: space-between;">
             <div>
-                <div id="temp-display">67°</div>
-                <div style="font-size: 2rem;">Clear</div>
-                <div style="font-size: 1.5rem; margin-top: 20px;">Wind: ENE 4</div>
+                <div id="temp-display">36°</div>
+                <div style="font-size: 2.2rem;">Mist</div>
             </div>
             
-            <div style="font-size: 1.6rem; line-height: 2;">
-                Humidity: 84%<br>
-                Dewpoint: 62°<br>
-                Ceiling: Unlimited<br>
-                Visibility: 10 mi.<br>
-                Pressure: 30.22
+            <div class="stats">
+                Humidity: 92%<br>
+                Dewpoint: 34°<br>
+                Wind: Calm<br>
+                Pressure: 30.12
             </div>
         </div>
-    </div>
-
-    <div id="ticker">
-        Visib: 10 mi. Ceiling: Unlimited
     </div>
 
 </body>
