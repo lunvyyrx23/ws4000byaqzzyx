@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WS4000 Dashboard</title>
+    <title>WS4000 All-In-One</title>
     <style>
         /* --- 1. FONTS & THEMES --- */
         @font-face {
@@ -21,6 +21,7 @@
             background: var(--page-bg);
             display: flex; flex-direction: column; align-items: center;
             transition: background 0.5s ease;
+            touch-action: manipulation;
         }
 
         /* --- 2. THE SCREEN CONTAINER --- */
@@ -36,7 +37,7 @@
             border: 0.8vw solid #444;
             border-radius: 1.5vw;
             overflow: hidden;
-            container-type: size; /* Makes text scale to the BOX, not the screen */
+            container-type: size; /* MAGIC: Makes text scale to the BOX, not the screen */
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
@@ -51,7 +52,7 @@
             color: white; pointer-events: none;
         }
 
-        /* --- 3. SCALABLE TEXT (cqw units) --- */
+        /* --- 3. SCALABLE TEXT (cqw units keep everything in place) --- */
         #header-area {
             position: absolute; top: 8%; left: 35%; right: 5%;
             display: flex; justify-content: space-between;
@@ -95,7 +96,7 @@
                     <div id="station-name">INITIALIZING...</div>
                     <div id="main-display">
                         <div id="big-temp">--°</div>
-                        <div id="cond-text">LOADING DATA</div>
+                        <div id="cond-text">PLEASE WAIT</div>
                         <div id="wind-line">Wind: <span id="wind-val">--</span></div>
                     </div>
                 </div>
@@ -104,7 +105,7 @@
 
         <div id="controls">
             <div class="search-row">
-                <input type="text" id="city-input" placeholder="Enter City or Zip...">
+                <input type="text" id="city-input" placeholder="Enter City/Zip...">
                 <button onclick="manualSearch()">GO</button>
             </div>
             <div class="btn-group">
@@ -114,6 +115,59 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const PROXY = "https://api.allorigins.win/get?url=";
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('time').textContent = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' }).toUpperCase();
+            document.getElementById('date').textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit' }).toUpperCase().replace(/,/g, "");
+        }
+        setInterval(updateClock, 1000);
+
+        async function fetchWeather(lat, lon) {
+            try {
+                const pointUrl = `https://api.weather.gov/points/${lat},${lon}`;
+                const pRes = await fetch(`${PROXY}${encodeURIComponent(pointUrl)}`);
+                const pData = JSON.parse((await pRes.json()).contents);
+                
+                const fRes = await fetch(`${PROXY}${encodeURIComponent(pData.properties.forecast)}`);
+                const fData = JSON.parse((await fRes.json()).contents);
+                const cur = fData.properties.periods[0];
+
+                document.getElementById('station-name').textContent = pData.properties.relativeLocation.properties.city.toUpperCase();
+                document.getElementById('big-temp').textContent = cur.temperature + "°";
+                document.getElementById('cond-text').textContent = cur.shortForecast.toUpperCase();
+                document.getElementById('wind-val').textContent = `${cur.windDirection} ${cur.windSpeed}`;
+            } catch (err) {
+                document.getElementById('station-name').textContent = "STATION ERROR";
+            }
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('light-mode');
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function toggleFullscreen() {
+            document.getElementById('screen').classList.toggle('full-mode');
+        }
+
+        async function manualSearch() {
+            const val = document.getElementById('city-input').value;
+            if(!val) return;
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${val}`);
+            const data = await res.json();
+            if(data[0]) fetchWeather(data[0].lat, data[0].lon);
+        }
+
+        window.onload = () => {
+            updateClock();
+            navigator.geolocation.getCurrentPosition(
+                p => fetchWeather(p.coords.latitude, p.coords.longitude),
+                () => fetchWeather(40.7128, -74.0060) // Default NYC
+            );
+        };
+    </script>
 </body>
 </html>
