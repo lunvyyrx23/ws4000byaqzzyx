@@ -17,43 +17,41 @@
         src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
     }
 
-    /* 2. Setup the Canvas */
     html, body {
         width: 100% !important;
         height: 100% !important;
         background-color: #000 !important;
-        /* Allowing scroll in case 1347px is taller than the iPad screen */
-        overflow: auto !important; 
+        overflow: hidden !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
     }
 
-    /* 3. The 1797x1347 Screen Container */
+    /* 2. The 640x640 Screen Container */
     #ws4000-screen {
-        /* FORCING EXACT DIMENSIONS */
-        width: 1797px !important; 
-        height: 1347px !important;
-        flex-shrink: 0 !important; /* Prevents browser from trying to squish it */
+        /* FORCING SQUARE DIMENSIONS */
+        width: 640px !important; 
+        height: 640px !important;
+        flex-shrink: 0 !important;
         
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
-        background-size: auto !important; 
+        /* Using 100% 100% to force the image into the 640 square */
+        background-size: 100% 100% !important; 
         background-position: center !important;
         background-repeat: no-repeat !important;
         
         position: relative !important;
-        /* Padding relative to this large size */
-        padding: 100px 120px !important; 
+        padding: 45px !important; /* Adjusted padding for 640px */
         display: flex !important;
         flex-direction: column !important;
     }
 
-    /* 4. Text Styles Scaled for the Larger Resolution */
+    /* 3. Text Styles Adjusted for 640px */
     .header {
         color: #ffff00 !important;
-        font-size: 5rem !important; /* Made larger to match the high res */
-        text-shadow: 6px 6px #000 !important;
-        margin-bottom: 60px !important;
+        font-size: 2rem !important;
+        text-shadow: 3px 3px #000 !important;
+        margin-bottom: 30px !important;
     }
 
     .data-row {
@@ -63,23 +61,23 @@
     }
 
     #temp-value {
-        font-size: 20rem !important; /* Massive temp for high res */
+        font-size: 8rem !important;
         line-height: 0.8 !important;
-        text-shadow: 12px 12px #000 !important;
+        text-shadow: 6px 6px #000 !important;
         color: #fff !important;
     }
 
     .condition-label {
-        font-size: 4.5rem !important;
-        text-shadow: 6px 6px #000 !important;
+        font-size: 1.8rem !important;
+        text-shadow: 3px 3px #000 !important;
         color: #fff !important;
-        margin-top: 15px !important;
+        margin-top: 10px !important;
     }
 
     .stats-box {
-        font-size: 3.8rem !important;
-        line-height: 1.6 !important;
-        text-shadow: 6px 6px #000 !important;
+        font-size: 1.4rem !important;
+        line-height: 1.5 !important;
+        text-shadow: 3px 3px #000 !important;
         color: #fff !important;
     }
 </style>
