@@ -23,35 +23,35 @@
         width: 100% !important;
         height: 100% !important;
         overflow: hidden !important;
-        background-color: #000; /* Black background around the small image */
+        background-color: #000;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
     body {
-        /* FORCING THE IMAGE SMALLER (Set to 60% of screen width) */
+        /* Force image to 100% of the container */
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
         background-repeat: no-repeat !important;
         background-position: center center !important; 
-        background-size: 60% auto !important; /* Adjust 60% to make it even smaller or larger */
+        background-size: 100% 100% !important; 
     }
 
-    /* 2. Text Container (Matches the 60% width of the background) */
+    /* 2. Text Container set to 100% */
     #main-container {
-        width: 60%; 
-        aspect-ratio: 4 / 3; /* Matches the old TV ratio of the image */
+        width: 100%; 
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        padding: 4%; /* Padding inside the small image area */
+        padding: 6% 8%; /* Adjusts the text safe-area */
     }
 
     .header {
         color: #ffff00 !important;
-        font-size: 2rem;
-        text-shadow: 2px 2px #000;
-        margin-bottom: 5% !important;
+        font-size: 3.2rem;
+        text-shadow: 4px 4px #000;
+        margin-bottom: 4% !important;
     }
 
     .data-container {
@@ -61,23 +61,23 @@
     }
 
     #temp-value {
-        font-size: 8rem;
+        font-size: 13rem;
         line-height: 0.9;
-        text-shadow: 4px 4px #000;
+        text-shadow: 8px 8px #000;
         color: white;
     }
 
     .condition-text {
-        font-size: 1.8rem;
-        text-shadow: 2px 2px #000;
+        font-size: 2.8rem;
+        text-shadow: 4px 4px #000;
         color: white;
         margin-top: 5px !important;
     }
 
     .stats-column {
-        font-size: 1.5rem;
-        line-height: 1.4;
-        text-shadow: 2px 2px #000;
+        font-size: 2.4rem;
+        line-height: 1.5;
+        text-shadow: 4px 4px #000;
         color: white;
         text-align: left;
     }
