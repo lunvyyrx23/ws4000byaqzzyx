@@ -2,18 +2,26 @@
 <html lang="en">
 <head>
 <style>
-    /* 1. ULTIMATE RESET */
+    /* 1. RESET AND FORCE NORMAL CASING */
     * {
         margin: 0 !important;
         padding: 0 !important;
         border: none !important;
         box-sizing: border-box !important;
         font-family: 'Star4000', sans-serif !important;
+        /* Force normal text casing */
+        text-transform: none !important; 
+        font-variant: normal !important;
+        /* Standard rendering */
+        -webkit-font-smoothing: auto !important;
+        -moz-osx-font-smoothing: auto !important;
     }
 
     @font-face {
         font-family: 'Star4000';
         src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
     }
 
     html, body {
@@ -29,18 +37,17 @@
         background-repeat: no-repeat !important;
         display: flex;
         flex-direction: column;
-        padding: 5% 7%;
+        padding: 6% 8%;
     }
 
-    /* 2. THE TOP HEADER */
+    /* 2. HEADERS & DATA */
     .header {
         color: #ffff00 !important;
         font-size: 3.2rem;
         text-shadow: 4px 4px #000;
-        margin-bottom: 40px !important;
+        margin-bottom: 30px !important;
     }
 
-    /* 3. THE MAIN DATA ROW */
     .data-container {
         display: flex;
         justify-content: space-between;
@@ -48,33 +55,25 @@
         width: 100%;
     }
 
-    .temp-section {
-        display: flex;
-        flex-direction: column;
-    }
-
     #temp-value {
-        font-size: 14rem;
-        line-height: 0.8;
+        font-size: 13rem;
+        line-height: 0.9;
         text-shadow: 8px 8px #000;
         color: white;
     }
 
     .condition-text {
         font-size: 2.8rem;
-        margin-top: 10px !important;
         text-shadow: 4px 4px #000;
         color: white;
+        margin-top: 5px !important;
     }
 
-    /* 4. THE RIGHT-SIDE STATS */
     .stats-column {
-        text-align: left;
         font-size: 2.4rem;
-        line-height: 1.6;
+        line-height: 1.5;
         text-shadow: 4px 4px #000;
         color: white;
-        margin-top: 20px !important;
         padding-right: 5%;
     }
 </style>
