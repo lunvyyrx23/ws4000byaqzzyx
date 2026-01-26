@@ -1,0 +1,80 @@
+@font-face {
+    font-family: "Star4000";
+    src: url("https://wsbylunv.neocities.org/Star4000.ttf") format("truetype");
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: black;
+    font-family: "Star4000", monospace;
+}
+
+#screen {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+}
+
+#bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 1;
+}
+
+#overlay {
+    position: absolute;
+    top: 18%;
+    left: 12%;
+    right: 12%;
+    z-index: 2;
+    color: white;
+    text-shadow: 3px 3px 0px #000;
+    text-transform: uppercase;
+}
+
+#city-name {
+    font-size: 38px;
+    margin-bottom: 20px;
+    color: #ffff00;
+    letter-spacing: 1px;
+}
+
+#weather-box {
+    font-size: 28px;
+    line-height: 1.6;
+}
+
+.data-row {
+    margin-bottom: 10px;
+}
+
+.label {
+    color: #00ffff;
+    margin-right: 15px;
+}
+
+#status {
+    font-size: 20px;
+    color: #fff;
+    opacity: 0.8;
+}
+
+.pulse {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0.3; }
+}
