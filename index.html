@@ -3,98 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>aqzzyxs WeatherStar4000+</title>
+    <title>aqzzyxs WS4000+ | Current Conditions</title>
     <style>
         @font-face {
             font-family: "Star4000";
             src: url("https://wsbylunv.neocities.org/Star4000.ttf") format("truetype");
         }
 
-        /* --- RETRO BOOT SCREEN --- */
-        #loading-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000; color: #ffff00; z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            font-family: "Star4000", sans-serif;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .boot-text { font-size: 1.5rem; opacity: 0; transition: opacity 0.5s; text-align: center; margin: 10px 0; }
-        .active { opacity: 1; }
-
-        /* --- MAIN UI --- */
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background: #050505; display: flex; overflow: hidden;
-            font-family: "Star4000", sans-serif; color: white;
+            background: #000; overflow: hidden;
+            font-family: "Star4000", sans-serif;
         }
-        #sidebar {
-            width: 280px; height: 100vh; background: #111;
-            border-right: 2px solid #333; padding: 20px; box-sizing: border-box;
+
+        /* --- BOOT SCREEN --- */
+        #boot-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 1s;
         }
-        input {
-            width: 100%; padding: 12px; margin-bottom: 10px;
-            background: #000; border: 1px solid #444; color: #fff;
-            font-size: 16px; border-radius: 4px; box-sizing: border-box;
+        .boot-text { font-size: 1.5rem; color: #ffff00; opacity: 0; margin: 10px; text-align: center; }
+        .active { opacity: 1; }
+
+        /* --- MAIN DISPLAY --- */
+        #display-container {
+            position: relative; width: 100vw; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
         }
-        button {
-            width: 100%; padding: 12px; background: #2255aa;
-            color: white; border: none; border-radius: 4px; cursor: pointer;
-            font-family: "Star4000";
+
+        #bg-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
+
+        /* --- DATA OVERLAY --- */
+        #data-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2;
+            color: white;
+            text-shadow: 3px 3px #000; /* Classic CRT text shadow */
         }
-        .label { color: #666; font-size: 0.7rem; margin-top: 15px; text-transform: uppercase; }
-        .val { color: #00ffff; font-size: 1.2rem; text-transform: uppercase; }
-        #temp-val { color: #fff; font-size: 3.5rem; margin: 5px 0; }
-        #screen-container { flex-grow: 1; background: black; display: flex; justify-content: center; align-items: center; }
-        #bg { width: 100%; height: 100%; object-fit: contain; }
+
+        .header-text {
+            position: absolute; top: 12%; left: 8%;
+            color: #ffff00; font-size: 1.8rem;
+        }
+
+        .city-name {
+            position: absolute; top: 25%; left: 8%;
+            font-size: 2.2rem; color: #fff;
+        }
+
+        .condition-text {
+            position: absolute; top: 38%; left: 8%;
+            color: #00ffff; font-size: 1.8rem;
+        }
+
+        /* LARGE TEMPERATURE ON THE RIGHT */
+        #temp-display {
+            position: absolute;
+            top: 25%;
+            right: 12%;
+            font-size: 8rem; /* Big impact temperature */
+            letter-spacing: -5px;
+        }
+
+        .degree-symbol { font-size: 3rem; vertical-align: top; margin-left: 5px; }
+
     </style>
 </head>
-<body onload="runBootSequence()">
+<body onload="runBoot()">
 
-    <div id="loading-screen">
-        <div id="boot-1" class="boot-text">aqzzyxs WeatherStar4000+</div>
-        <div id="boot-2" class="boot-text" style="color:#00ffff;">CURRENT CONDITIONS</div>
-        <div id="boot-3" class="boot-text" style="color:#ffffff;">LOCAL OBSERVATIONS</div>
+    <div id="boot-screen">
+        <div id="bt1" class="boot-text">aqzzyxs WeatherStar 4000+</div>
+        <div id="bt2" class="boot-text" style="color:white; font-size: 1rem;">CURRENT CONDITIONS</div>
     </div>
 
-    <div id="sidebar">
-        <h2 style="color:#ffff00; font-size:0.9rem; margin-bottom: 15px;">STATION SEARCH</h2>
-        <input type="text" id="city-input" placeholder="Enter City Name">
-        <button onclick="alert('System Ready - Ready to Fetch!')">CONNECT</button>
+    <div id="display-container">
+        <img id="bg-img" src="https://wsbylunv.neocities.org/ws4000_bg.png">
         
-        <div id="weather-info">
-            <div class="label">LOCATION</div>
-            <div id="city-name" class="val">---</div>
+        <div id="data-layer">
+            <div class="header-text">CURRENT CONDITIONS</div>
             
-            <div class="label">TEMPERATURE</div>
-            <div id="temp-val">--°</div>
-            
-            <div class="label">STATUS</div>
-            <div id="stat-val" style="color:#888;">STANDBY</div>
+            <div class="city-name" id="city-out">CHICAGO</div>
+            <div class="condition-text" id="cond-out">MOSTLY CLOUDY</div>
+
+            <div id="temp-display">
+                <span id="temp-num">72</span><span class="degree-symbol">°</span>
+            </div>
         </div>
     </div>
 
-    <div id="screen-container">
-        <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png">
-    </div>
-
     <script>
-        function runBootSequence() {
-            const b1 = document.getElementById('boot-1');
-            const b2 = document.getElementById('boot-2');
-            const b3 = document.getElementById('boot-3');
-            const screen = document.getElementById('loading-screen');
-
-            // Boot Timing
-            setTimeout(() => b1.classList.add('active'), 500);
-            setTimeout(() => b2.classList.add('active'), 1500);
-            setTimeout(() => b3.classList.add('active'), 2500);
-
-            // Fade Out
+        function runBoot() {
+            setTimeout(() => document.getElementById('bt1').classList.add('active'), 500);
+            setTimeout(() => document.getElementById('bt2').classList.add('active'), 1500);
+            
             setTimeout(() => {
+                const screen = document.getElementById('boot-screen');
                 screen.style.opacity = '0';
                 setTimeout(() => screen.style.display = 'none', 1000);
-            }, 4500);
+            }, 3500);
         }
     </script>
 </body>
