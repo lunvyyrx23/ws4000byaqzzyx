@@ -3,67 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aqzzyxs WS4000+ | Absolute Truth</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>aqzzyxs WS4000+ | Official Site</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Share Tech Mono', monospace; }
-        
-        /* THE MAIN TV VIEWPORT */
-        #viewport { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        #bg-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
-        
-        /* DATA OVERLAY - ACCURATE PLACEMENT */
-        #data-layer { position: absolute; inset: 0; z-index: 2; color: white; text-shadow: 3px 3px #000; pointer-events: none; }
-        .header { position: absolute; top: 12%; left: 10%; color: #ffff00; font-size: 1.8rem; letter-spacing: 2px; }
-        .city { position: absolute; top: 22%; left: 10%; font-size: 2.2rem; border-bottom: 2px solid #00ffff; }
-        .temp { position: absolute; top: 22%; right: 15%; font-size: 8rem; letter-spacing: -5px; }
-        
-        .stats-grid { position: absolute; bottom: 15%; left: 10%; font-size: 1.5rem; line-height: 1.8; }
-        .label { color: #ffff00; display: inline-block; width: 180px; }
-        .val { color: #fff; }
-
-        /* THE SETTINGS ICON */
-        #settings-gear { 
-            position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; 
-            background: rgba(34, 34, 34, 0.8); border: 1px solid #ffff00; color: #ffff00; 
-            display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100;
+        @font-face {
+            font-family: "Star4000";
+            src: url("https://wsbylunv.neocities.org/Star4000.ttf") format("truetype");
         }
 
-        /* SIDEBAR CONTROLS */
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: #000; overflow: hidden; 
+            font-family: "Star4000", sans-serif; 
+        }
+
+        /* Viewport Container */
+        #viewport { 
+            position: relative; width: 100vw; height: 100vh; 
+            display: flex; justify-content: center; align-items: center; 
+        }
+
+        #bg-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
+
+        /* The Box Fix: Interactive Sidebar */
+        #settings-gear { 
+            position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; 
+            background: #222; border: 2px solid #ffff00; color: #ffff00; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; z-index: 100; font-size: 1.5rem; 
+        }
+
         #sidebar { 
             position: absolute; top: 0; left: -300px; width: 280px; height: 100%; 
-            background: rgba(0, 0, 0, 0.9); border-right: 3px solid #ffff00; 
+            background: rgba(0,0,0,0.9); border-right: 3px solid #ffff00; 
             padding: 30px 20px; box-sizing: border-box; transition: 0.3s; z-index: 99; color: white; 
         }
         #sidebar.open { left: 0; }
-        input { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; font-family: inherit; margin-bottom: 15px; }
-        button { width: 100%; padding: 12px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: inherit; text-transform: uppercase; }
+
+        input { 
+            width: 100%; padding: 12px; background: #000; border: 1px solid #ffff00; 
+            color: #fff; font-family: "Star4000"; margin-bottom: 15px; box-sizing: border-box; 
+        }
+        button { 
+            width: 100%; padding: 12px; background: #2255aa; color: white; 
+            border: none; cursor: pointer; font-family: "Star4000"; 
+        }
+
+        /* Weather Data Overlay */
+        #data-layer { position: absolute; inset: 0; z-index: 2; color: white; text-shadow: 3px 3px #000; pointer-events: none; }
+        .header { position: absolute; top: 12%; left: 10%; color: #ffff00; font-size: 1.8rem; }
+        .city { position: absolute; top: 22%; left: 10%; font-size: 2.2rem; }
+        .temp { position: absolute; top: 22%; right: 15%; font-size: 8rem; letter-spacing: -5px; }
+        
+        .stats-grid { position: absolute; bottom: 15%; left: 10%; font-size: 1.4rem; line-height: 1.8; }
+        .label { color: #ffff00; width: 200px; display: inline-block; }
     </style>
 </head>
-<body onload="initStation()">
+<body onload="init()">
 
     <div id="viewport">
         <div id="settings-gear" onclick="toggleSidebar()">⚙</div>
         
         <div id="sidebar">
-            <div style="color:#ffff00; margin-bottom:20px; font-size: 1.1rem;">STATION COMMAND</div>
-            <input type="text" id="city-in" placeholder="ENTER ZIP CODE">
-            <button onclick="manualSearch()">MANUAL SYNC</button>
-            <div id="status-log" style="margin-top:20px; font-size: 0.8rem; color: #00ffff;">SYSTEM: IDLE</div>
+            <div style="color:#ffff00; margin-bottom:20px;">STATION CONTROL</div>
+            <input type="text" id="city-input" placeholder="ZIP OR CITY">
+            <button onclick="manualSearch()">SYNC SATELLITE</button>
+            <div id="status" style="margin-top:20px; font-size: 0.7rem; color: #00ffff;">READY</div>
         </div>
 
         <img id="bg-img" src="https://wsbylunv.neocities.org/ws4000_bg.png">
 
         <div id="data-layer">
             <div class="header">CURRENT CONDITIONS</div>
-            <div class="city" id="city-out">CALIBRATING...</div>
+            <div class="city" id="city-out">INITIALIZING...</div>
             <div class="temp"><span id="temp-num">--</span>°</div>
             
             <div class="stats-grid">
-                <div><span class="label">WIND:</span> <span class="val" id="wind">--</span> <span class="val">MPH</span></div>
-                <div><span class="label">HUMIDITY:</span> <span class="val" id="hum">--</span> <span class="val">%</span></div>
-                <div><span class="label">DEW POINT:</span> <span class="val" id="dew">--</span> <span class="val">°</span></div>
-                <div><span class="label">PRESSURE:</span> <span class="val" id="press">--</span> <span class="val">IN</span></div>
+                <div><span class="label">WIND:</span> <span id="wind">--</span> MPH</div>
+                <div><span class="label">HUMIDITY:</span> <span id="hum">--</span>%</div>
+                <div><span class="label">DEW POINT:</span> <span id="dew">--</span>°</div>
+                <div><span class="label">PRESSURE:</span> <span id="press">--</span> IN</div>
             </div>
         </div>
     </div>
@@ -75,57 +93,48 @@
             document.getElementById('settings-gear').textContent = s.classList.contains('open') ? "✕" : "⚙";
         }
 
-        async function initStation() {
-            document.getElementById('status-log').textContent = "SYSTEM: ACQUIRING GPS...";
+        // FIXED: Now correctly pulls from the input box
+        async function manualSearch() {
+            const query = document.getElementById('city-input').value;
+            if(!query) return;
+            
+            document.getElementById('status').textContent = "SEARCHING...";
+            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1`);
+            const data = await res.json();
+            
+            if(data.results) {
+                loadWeather(data.results[0].latitude, data.results[0].longitude, data.results[0].name);
+            } else {
+                document.getElementById('status').textContent = "LOCATION NOT FOUND";
+            }
+        }
+
+        async function init() {
             navigator.geolocation.getCurrentPosition(
-                (p) => fetchWeather(p.coords.latitude, p.coords.longitude),
-                () => { 
-                    document.getElementById('status-log').textContent = "GPS ERROR: ENTER ZIP";
-                    toggleSidebar(); 
-                },
-                { enableHighAccuracy: true, timeout: 10000 }
+                (p) => loadWeather(p.coords.latitude, p.coords.longitude),
+                () => { toggleSidebar(); },
+                { enableHighAccuracy: true }
             );
         }
 
-        async function manualSearch() {
-            const zip = document.getElementById('city-in').value;
-            if(!zip) return;
-            document.getElementById('status-log').textContent = "SYSTEM: GEO-LOCATING...";
+        async function loadWeather(lat, lon, nameOverride) {
+            const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&models=hrrr`);
+            const d = await wRes.json();
             
-            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${zip}&count=1`);
-            const data = await res.json();
-            if(data.results) {
-                fetchWeather(data.results[0].latitude, data.results[0].longitude, data.results[0].name);
+            let cityName = nameOverride;
+            if(!cityName) {
+                const gRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                const gD = await gRes.json();
+                cityName = gD.address.city || gD.address.town || "LOCAL";
             }
-        }
 
-        async function fetchWeather(lat, lon, overrideName) {
-            document.getElementById('status-log').textContent = "SYSTEM: FETCHING HRRR...";
-            try {
-                // High-Resolution Localized Request
-                const wUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&models=hrrr`;
-                const wRes = await fetch(wUrl);
-                const wData = await wRes.json();
-
-                let cityName = overrideName || "LOCAL AREA";
-                if(!overrideName) {
-                    const gRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-                    const gD = await gRes.json();
-                    cityName = gD.address.city || gD.address.town || gD.address.village || "LOCAL";
-                }
-
-                // Push to UI
-                document.getElementById('city-out').textContent = cityName.toUpperCase();
-                document.getElementById('temp-num').textContent = Math.round(wData.current.temperature_2m);
-                document.getElementById('hum').textContent = wData.current.relative_humidity_2m;
-                document.getElementById('wind').textContent = Math.round(wData.current.wind_speed_10m);
-                document.getElementById('dew').textContent = Math.round(wData.current.dew_point_2m);
-                document.getElementById('press').textContent = (wData.current.surface_pressure * 0.02953).toFixed(2);
-                
-                document.getElementById('status-log').textContent = "SYSTEM: ONLINE";
-            } catch(e) {
-                document.getElementById('status-log').textContent = "SYSTEM: SYNC FAILED";
-            }
+            document.getElementById('city-out').textContent = cityName.toUpperCase();
+            document.getElementById('temp-num').textContent = Math.round(d.current.temperature_2m);
+            document.getElementById('hum').textContent = d.current.relative_humidity_2m;
+            document.getElementById('wind').textContent = Math.round(d.current.wind_speed_10m);
+            document.getElementById('dew').textContent = Math.round(d.current.dew_point_2m);
+            document.getElementById('press').textContent = (d.current.surface_pressure * 0.02953).toFixed(2);
+            document.getElementById('status').textContent = "SYNCED";
         }
     </script>
 </body>
