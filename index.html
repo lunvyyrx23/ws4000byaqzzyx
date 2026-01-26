@@ -1,77 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>WS4000+ | NWS Satellite</title>
-    <style>
-        @font-face {
-            font-family: "Star4000";
-            src: url("https://cdn.jsdelivr.net/gh/lunvyyrx23/ws4000byaqzzyx/Star4000.ttf") format("truetype");
-        }
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        /* Authentic WS4000 Gradient: Royal Blue to Midnight */
+        background: linear-gradient(180deg, #1c5c77 0%, #031b60 100%);
+        color: white;
+        font-family: sans-serif; /* Your Star4000 font will apply here */
+        height: 100vh;
+        overflow: hidden; 
+    }
 
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            background: #000; overflow: hidden; 
-            font-family: "Star4000", sans-serif !important; 
-        }
+    /* THE UNREMOVABLE SIDEBAR */
+    #sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 180px;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4); /* Darker sidebar contrast */
+        border-right: 4px solid #ffaa00; /* Authentic gold divider */
+        padding: 25px 15px;
+        box-sizing: border-box;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+    }
 
-        #viewport { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        #bg-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
-        
-        /* Weather Data Overlay */
-        #data-layer { position: absolute; inset: 0; z-index: 2; color: white; text-shadow: 2px 2px #000; pointer-events: none; }
-        .header { position: absolute; top: 12%; left: 10%; color: #ffff00; font-size: 1.8rem; }
-        .city { position: absolute; top: 22%; left: 10%; font-size: 2.2rem; }
-        .temp { position: absolute; top: 22%; right: 15%; font-size: 8rem; }
-        .stats-grid { position: absolute; bottom: 15%; left: 10%; font-size: 1.4rem; line-height: 1.8; color: #ffff00; }
-        .stats-grid span { color: #fff; margin-left: 10px; }
+    /* MAIN DISPLAY AREA */
+    #main-display {
+        margin-left: 180px; /* Locked to the sidebar edge */
+        padding: 60px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
 
-        /* The Alert Crawler */
-        #alert-banner {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            background: rgba(200, 0, 0, 0.9); color: white;
-            padding: 10px 0; font-size: 1.2rem; z-index: 10;
-            display: none; /* Hidden by default */
-            border-top: 2px solid #ff0000;
-        }
-        .marquee { display: inline-block; white-space: nowrap; animation: crawl 20s linear infinite; }
-        @keyframes crawl { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+    .header-text {
+        font-size: 3rem;
+        color: #ffaa00;
+        text-shadow: 3px 3px #000;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
 
-        /* Sidebar & Gear */
-        #settings-gear { position: absolute; top: 15px; left: 15px; width: 40px; height: 40px; background: #222; border: 1px solid #ffff00; color: #ffff00; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; }
-        #sidebar { position: absolute; top: 0; left: -300px; width: 280px; height: 100%; background: rgba(0,0,0,0.95); border-right: 3px solid #ffff00; padding: 30px 20px; box-sizing: border-box; transition: 0.3s; z-index: 99; color: white; }
-        #sidebar.open { left: 0; }
-        input { width: 100%; padding: 10px; background: #000; border: 1px solid #ffff00; color: #fff; font-family: inherit; margin-bottom: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: inherit; }
-    </style>
+    #temp-display {
+        font-size: 10rem;
+        margin: 20px 0;
+        font-weight: bold;
+    }
+
+    /* Input styling for Orion */
+    input {
+        background: #000;
+        border: 1px solid #ffaa00;
+        color: #fff;
+        padding: 8px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+
+    button {
+        background: #ffaa00;
+        border: none;
+        padding: 10px;
+        font-weight: bold;
+        color: #000;
+        cursor: pointer;
+    }
+</style>
 </head>
-<body onload="init()">
+<body>
 
-    <div id="viewport">
-        <div id="settings-gear" onclick="toggleSidebar()">⚙</div>
-        <div id="sidebar">
-            <div style="color:#ffff00; margin-bottom:15px;">Live NWS Sync</div>
-            <input type="text" id="city-input" placeholder="City Name">
-            <button onclick="manualSearch()">Connect</button>
-            <div id="status" style="margin-top:20px; font-size: 0.8rem; color: #00ffff;">Ready</div>
+    <div id="sidebar">
+        <div style="color: #ffaa00; font-size: 1.2rem; line-height: 1; margin-bottom: 30px;">
+            LOCAL<br>FORECAST
         </div>
-
-        <img id="bg-img" src="https://wsbylunv.neocities.org/ws4000_bg.png">
-
-        <div id="data-layer">
-            <div class="header">Current Conditions</div>
-            <div id="city-out" class="city">Detecting...</div>
-            <div class="temp"><span id="temp-num">--</span>°</div>
-            <div class="stats-grid">
-                <div>Wind: <span id="wind">--</span> mph</div>
-                <div>Humidity: <span id="hum">--</span>%</div>
-                <div>Dew Point: <span id="dew">--</span>°</div>
-                <div>Pressure: <span id="press">--</span> in</div>
-            </div>
+        <input type="text" id="city-input" placeholder="CITY NAME">
+        <button onclick="manualSearch()">UPDATE</button>
+        
+        <div id="status" style="margin-top: auto; font-size: 0.7rem; color: #00ffff; text-transform: uppercase;">
+            SYSTEM: ONLINE
         </div>
+    </div>
 
-        <div id="alert-banner">
-            <div class="marquee" id="alert-text">** SEVERE WEATHER ALERT IN EFFECT **</div>
+    <div id="main-display">
+        <div id="city-out" class="header-text">CURRENT CONDITIONS</div>
+        <div id="temp-display"><span id="temp-num">--</span>°</div>
+        <div style="font-size: 1.8rem; line-height: 1.6;">
+            WIND: <span id="wind">0</span> MPH<br>
+            HUMIDITY: <span id="hum">0</span>%<br>
+            DEWPOINT: <span id="dew">0</span>°
         </div>
     </div>
 
@@ -81,43 +103,30 @@
         const status = document.getElementById('status');
         if(!query) return;
 
-        status.textContent = "Orion: Fetching Geocode...";
+        status.textContent = "LINKING...";
 
         try {
-            // Step 1: Geocode (Direct call)
-            const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1`);
-            const geoData = await geoRes.json();
+            const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1`);
+            const data = await geo.json();
+            
+            if(data.results) {
+                const { latitude, longitude, name } = data.results[0];
+                const wUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,dew_point_2m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`;
+                
+                const wRes = await fetch(wUrl);
+                const wData = await wRes.json();
+                const now = wData.current;
 
-            if (!geoData.results) {
-                status.textContent = "Error: City not found.";
-                return;
+                document.getElementById('city-out').textContent = name;
+                document.getElementById('temp-num').textContent = Math.round(now.temperature_2m);
+                document.getElementById('wind').textContent = Math.round(now.wind_speed_10m);
+                document.getElementById('hum').textContent = Math.round(now.relative_humidity_2m);
+                document.getElementById('dew').textContent = Math.round(now.dew_point_2m);
+                
+                status.textContent = "SYSTEM: ONLINE";
             }
-
-            const { latitude, longitude, name } = geoData.results[0];
-            status.textContent = `Orion: Found ${name}. Fetching 36° Data...`;
-
-            // Step 2: Weather (Asking for Fahrenheit directly)
-            const wUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`;
-            
-            const wRes = await fetch(wUrl);
-            const wData = await wRes.json();
-            const now = wData.current;
-
-            // Step 3: UI Update
-            document.getElementById('city-out').textContent = name;
-            document.getElementById('temp-num').textContent = Math.round(now.temperature_2m);
-            document.getElementById('wind').textContent = Math.round(now.wind_speed_10m);
-            document.getElementById('hum').textContent = Math.round(now.relative_humidity_2m) + "%";
-
-            status.innerHTML = `ONLINE | Feels Like: <span style="color:#fff">${Math.round(now.apparent_temperature)}°</span>`;
-            
-            // Success! Close the menu
-            document.getElementById('sidebar').classList.remove('open');
-
-        } catch (e) {
-            // This is the debug line for your iPad screen
-            status.textContent = "ORION ERROR: " + e.message;
-            console.error(e);
+        } catch(e) {
+            status.textContent = "DATA ERROR";
         }
     }
 </script>
