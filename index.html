@@ -3,46 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WS4000 Retro Dash</title>
+    <title>WS4000 Smart Station</title>
     <style>
         @font-face {
             font-family: "Star4000";
             src: url("https://wsbylunv.neocities.org/Star4000.ttf") format("truetype");
         }
-
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
             background: #0a0a0a; display: flex; overflow: hidden;
-            font-family: "Star4000", sans-serif;
+            font-family: "Star4000", sans-serif; color: white;
         }
-
-        /* --- SIDEBAR --- */
         #sidebar {
             width: 280px; height: 100vh; background: #151515;
-            border-right: 2px solid #333; display: flex; flex-direction: column;
-            padding: 20px; box-sizing: border-box; color: white;
+            border-right: 2px solid #333; padding: 20px; box-sizing: border-box;
         }
-
-        h2 { font-size: 1rem; color: #ffff00; margin-bottom: 10px; }
-
         input {
             width: 100%; padding: 12px; margin-bottom: 10px;
             background: #000; border: 1px solid #444; color: #fff;
             font-size: 16px; border-radius: 4px; box-sizing: border-box;
         }
-
         button {
             width: 100%; padding: 12px; background: #2255aa;
-            color: white; border: none; border-radius: 4px;
-            cursor: pointer; font-family: "Star4000";
+            color: white; border: none; border-radius: 4px; cursor: pointer;
+            font-family: "Star4000";
         }
-
-        #weather-info { margin-top: 30px; border-top: 1px solid #333; padding-top: 20px; }
-        .label { color: #777; font-size: 0.75rem; margin-top: 10px; }
+        .label { color: #777; font-size: 0.75rem; margin-top: 15px; }
         .val { color: #00ffff; font-size: 1.3rem; text-transform: uppercase; }
-        #temp-val { color: #fff; font-size: 3.5rem; margin: 10px 0; }
-
-        /* --- TV SCREEN --- */
+        #temp-val { color: #fff; font-size: 3.5rem; margin: 5px 0; }
         #screen-container { flex-grow: 1; background: black; display: flex; justify-content: center; align-items: center; }
         #bg { width: 100%; height: 100%; object-fit: contain; }
     </style>
@@ -50,19 +38,17 @@
 <body>
 
     <div id="sidebar">
-        <h2>CITY SEARCH</h2>
-        <input type="text" id="city-input" placeholder="Type City (e.g. Dallas)">
-        <button onclick="getWeather()">GET WEATHER</button>
+        <h2 style="color:#ffff00; font-size:1rem;">CITY SEARCH</h2>
+        <input type="text" id="city-input" placeholder="e.g. Chicago">
+        <button onclick="getWeather()">SET LOCATION</button>
         
         <div id="weather-info">
             <div class="label">LOCATION</div>
             <div id="city-name" class="val">---</div>
-            
             <div class="label">TEMPERATURE</div>
             <div id="temp-val">--°</div>
-            
             <div class="label">STATUS</div>
-            <div id="stat-val" class="val" style="font-size: 0.8rem; color: #888;">READY</div>
+            <div id="stat-val" style="color:#888; font-size:0.7rem;">READY</div>
         </div>
     </div>
 
@@ -74,50 +60,41 @@
         const API_KEY = "ed60fcfbd110e408016b4fa1356f9160";
 
         async function getWeather() {
-            const city = document.getElementById('city-input').value.trim();
+            let city = document.getElementById('city-input').value.trim();
             if(!city) return;
 
-            const nameDisp = document.getElementById('city-name');
-            const tempDisp = document.getElementById('temp-val');
-            const statDisp = document.getElementById('stat-val');
+            document.getElementById('city-name').textContent = "SEARCHING...";
 
-            nameDisp.textContent = "SEARCHING...";
-            statDisp.textContent = "CONNECTING...";
-
-            // PATH 1: Direct Request (Works on most modern browsers/Neocities)
             try {
-                const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=imperial&appid=${API_KEY}`;
-                let response = await fetch(url);
+                // If it's just one word, we tip the API off that it's likely a city
+                const query = city.includes(',') ? city : `${city},US`;
                 
-                // PATH 2: If Path 1 fails or is blocked, use the AllOrigins Proxy
-                if (!response.ok) {
-                    statDisp.textContent = "RETRIES...";
-                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-                    const proxyRes = await fetch(proxyUrl);
-                    const proxyData = await proxyRes.json();
-                    var data = JSON.parse(proxyData.contents);
-                } else {
-                    var data = await response.json();
-                }
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(query)}&units=imperial&appid=${API_KEY}`);
+                const data = await response.json();
 
-                // If we finally got data, show it
-                if (data && data.cod == 200) {
-                    nameDisp.textContent = data.name;
-                    tempDisp.textContent = Math.round(data.main.temp) + "°";
-                    statDisp.textContent = "UPDATED";
-                    document.getElementById('city-input').value = "";
+                if (data.cod === 200) {
+                    document.getElementById('city-name').textContent = data.name;
+                    document.getElementById('temp-val').textContent = Math.round(data.main.temp) + "°";
+                    document.getElementById('stat-val').textContent = "SIGNAL OK";
+                    document.getElementById('stat-val').style.color = "#00ff00";
                 } else {
-                    nameDisp.textContent = "NOT FOUND";
-                    statDisp.textContent = "CHECK SPELLING";
+                    // If it failed with ",US", try one last time with just the raw input
+                    const retry = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=imperial&appid=${API_KEY}`);
+                    const retryData = await retry.json();
+                    
+                    if(retryData.cod === 200) {
+                        document.getElementById('city-name').textContent = retryData.name;
+                        document.getElementById('temp-val').textContent = Math.round(retryData.main.temp) + "°";
+                    } else {
+                        document.getElementById('city-name').textContent = "NOT FOUND";
+                        document.getElementById('stat-val').textContent = "REASON: " + retryData.message;
+                    }
                 }
-
             } catch (err) {
-                nameDisp.textContent = "FAILED";
-                statDisp.textContent = "CONNECTION ERROR";
+                document.getElementById('city-name').textContent = "BLOCKED";
+                document.getElementById('stat-val').textContent = "CHECK YOUR HOSTING";
             }
         }
-
-        document.getElementById("city-input").addEventListener("keyup", (e) => { if (e.key === "Enter") getWeather(); });
     </script>
 </body>
 </html>
