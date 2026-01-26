@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>WS4000+ | Live Satellite</title>
+    <title>WS4000+ | NWS Satellite</title>
     <style>
         @font-face {
             font-family: "Star4000";
@@ -18,14 +18,6 @@
         #viewport { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
         #bg-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
         
-        /* GUI Overlay */
-        #settings-gear { position: absolute; top: 15px; left: 15px; width: 40px; height: 40px; background: #222; border: 1px solid #ffff00; color: #ffff00; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; font-size: 1.2rem; }
-        #sidebar { position: absolute; top: 0; left: -300px; width: 280px; height: 100%; background: rgba(0,0,0,0.95); border-right: 3px solid #ffff00; padding: 30px 20px; box-sizing: border-box; transition: 0.3s; z-index: 99; color: white; }
-        #sidebar.open { left: 0; }
-
-        input { width: 100%; padding: 10px; background: #000; border: 1px solid #ffff00; color: #fff; font-family: inherit; margin-bottom: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: inherit; }
-
         /* Weather Data Overlay */
         #data-layer { position: absolute; inset: 0; z-index: 2; color: white; text-shadow: 2px 2px #000; pointer-events: none; }
         .header { position: absolute; top: 12%; left: 10%; color: #ffff00; font-size: 1.8rem; }
@@ -33,6 +25,24 @@
         .temp { position: absolute; top: 22%; right: 15%; font-size: 8rem; }
         .stats-grid { position: absolute; bottom: 15%; left: 10%; font-size: 1.4rem; line-height: 1.8; color: #ffff00; }
         .stats-grid span { color: #fff; margin-left: 10px; }
+
+        /* The Alert Crawler */
+        #alert-banner {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(200, 0, 0, 0.9); color: white;
+            padding: 10px 0; font-size: 1.2rem; z-index: 10;
+            display: none; /* Hidden by default */
+            border-top: 2px solid #ff0000;
+        }
+        .marquee { display: inline-block; white-space: nowrap; animation: crawl 20s linear infinite; }
+        @keyframes crawl { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* Sidebar & Gear */
+        #settings-gear { position: absolute; top: 15px; left: 15px; width: 40px; height: 40px; background: #222; border: 1px solid #ffff00; color: #ffff00; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; }
+        #sidebar { position: absolute; top: 0; left: -300px; width: 280px; height: 100%; background: rgba(0,0,0,0.95); border-right: 3px solid #ffff00; padding: 30px 20px; box-sizing: border-box; transition: 0.3s; z-index: 99; color: white; }
+        #sidebar.open { left: 0; }
+        input { width: 100%; padding: 10px; background: #000; border: 1px solid #ffff00; color: #fff; font-family: inherit; margin-bottom: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: inherit; }
     </style>
 </head>
 <body onload="init()">
@@ -40,17 +50,17 @@
     <div id="viewport">
         <div id="settings-gear" onclick="toggleSidebar()">⚙</div>
         <div id="sidebar">
-            <div style="color:#ffff00; margin-bottom:15px;">Station Settings</div>
-            <input type="text" id="city-input" placeholder="City or Zip Code">
-            <button onclick="manualSearch()">Sync Data</button>
-            <div id="status" style="margin-top:20px; font-size: 0.8rem; color: #00ffff;">System: Open-Meteo Live</div>
+            <div style="color:#ffff00; margin-bottom:15px;">Live NWS Sync</div>
+            <input type="text" id="city-input" placeholder="City Name">
+            <button onclick="manualSearch()">Connect</button>
+            <div id="status" style="margin-top:20px; font-size: 0.8rem; color: #00ffff;">Ready</div>
         </div>
 
         <img id="bg-img" src="https://wsbylunv.neocities.org/ws4000_bg.png">
 
         <div id="data-layer">
             <div class="header">Current Conditions</div>
-            <div id="city-out" class="city">Waiting...</div>
+            <div id="city-out" class="city">Detecting...</div>
             <div class="temp"><span id="temp-num">--</span>°</div>
             <div class="stats-grid">
                 <div>Wind: <span id="wind">--</span> mph</div>
@@ -59,70 +69,80 @@
                 <div>Pressure: <span id="press">--</span> in</div>
             </div>
         </div>
+
+        <div id="alert-banner">
+            <div class="marquee" id="alert-text">** SEVERE WEATHER ALERT IN EFFECT **</div>
+        </div>
     </div>
 
     <script>
-        function toggleSidebar() { 
-            const s = document.getElementById('sidebar');
-            s.classList.toggle('open');
-            document.getElementById('settings-gear').textContent = s.classList.contains('open') ? "✕" : "⚙";
-        }
+        const proxy = "https://corsproxy.io/?"; 
+        const userAgent = "WS4000-Sim (user@example.com)";
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
         async function init() {
             await document.fonts.load('12pt "Star4000"');
-            // Try auto-location first
             navigator.geolocation.getCurrentPosition(
-                (p) => updateWeather(p.coords.latitude, p.coords.longitude, "Your Area"),
-                () => { toggleSidebar(); }
+                (p) => updateStation(p.coords.latitude, p.coords.longitude, "Local Area"),
+                () => toggleSidebar()
             );
         }
 
         async function manualSearch() {
             const query = document.getElementById('city-input').value.trim();
             if(!query) return;
-            document.getElementById('status').textContent = "Locating...";
-
-            try {
-                // Get lat/lon from city name using free geocoding
-                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1&language=en&format=json`);
-                const geoData = await geoRes.json();
-                
-                if(geoData.results && geoData.results.length > 0) {
-                    const loc = geoData.results[0];
-                    updateWeather(loc.latitude, loc.longitude, loc.name);
-                } else {
-                    document.getElementById('status').textContent = "Error: City not found";
-                }
-            } catch(e) {
-                document.getElementById('status').textContent = "Error: Search failed";
+            // Using geocoding-api.open-meteo.com as it's the fastest free way to get coords
+            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1`);
+            const data = await res.json();
+            if(data.results) {
+                const loc = data.results[0];
+                updateStation(loc.latitude, loc.longitude, loc.name);
             }
         }
 
-        async function updateWeather(lat, lon, name) {
+        async function updateStation(lat, lon, name) {
+            document.getElementById('status').textContent = "Handshaking NWS...";
             try {
-                // Fetch real data from Open-Meteo
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&pressure_unit=inch`;
-                const res = await fetch(url);
-                const data = await res.json();
-                const cur = data.current;
-
-                // Update UI
-                document.getElementById('city-out').textContent = name;
-                document.getElementById('temp-num').textContent = Math.round(cur.temperature_2m);
-                document.getElementById('wind').textContent = Math.round(cur.wind_speed_10m);
-                document.getElementById('hum').textContent = cur.relative_humidity_2m;
-                document.getElementById('press').textContent = cur.surface_pressure.toFixed(2);
+                // 1. Get Point Metadata
+                const ptRes = await fetch(`${proxy}https://api.weather.gov/points/${lat},${lon}`, { headers: {"User-Agent": userAgent} });
+                const pt = await ptRes.json();
                 
-                // Dew point approximation
-                const t = cur.temperature_2m;
-                const rh = cur.relative_humidity_2m;
-                const dew = t - ((100 - rh) / 5);
-                document.getElementById('dew').textContent = Math.round(dew);
+                // 2. Get Observations
+                const stRes = await fetch(`${proxy}${pt.properties.observationStations}`, { headers: {"User-Agent": userAgent} });
+                const st = await stRes.json();
+                const obsRes = await fetch(`${proxy}${st.features[0].id}/observations/latest`, { headers: {"User-Agent": userAgent} });
+                const obs = await obsRes.json();
+                const cur = obs.properties;
 
-                document.getElementById('status').textContent = "System: Online";
+                // Update Display
+                document.getElementById('city-out').textContent = name;
+                document.getElementById('temp-num').textContent = Math.round((cur.temperature.value * 9/5) + 32);
+                document.getElementById('hum').textContent = Math.round(cur.relativeHumidity.value);
+                document.getElementById('wind').textContent = Math.round(cur.windSpeed.value * 0.621 || 0);
+                document.getElementById('press').textContent = (cur.barometricPressure.value * 0.000295).toFixed(2);
+                document.getElementById('dew').textContent = Math.round((cur.dewpoint.value * 9/5) + 32);
+
+                // 3. CHECK ALERTS (The trick)
+                checkAlerts(lat, lon);
+
+                document.getElementById('status').textContent = "Link Established";
                 if(document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
-            } catch(e) {
-                document.getElementById('status').textContent = "Error: Data Sync Failed";
+            } catch(e) { document.getElementById('status').textContent = "Connection Error"; }
+        }
+
+        async function checkAlerts(lat, lon) {
+            const alertRes = await fetch(`${proxy}https://api.weather.gov/alerts/active?point=${lat},${lon}`, { headers: {"User-Agent": userAgent} });
+            const alertData = await alertRes.json();
+            const banner = document.getElementById('alert-banner');
+            const text = document.getElementById('alert-text');
+
+            if(alertData.features && alertData.features.length > 0) {
+                const headline = alertData.features[0].properties.headline;
+                text.textContent = `*** HAZARDOUS WEATHER: ${headline.toUpperCase()} ***`;
+                banner.style.display = "block";
+            } else {
+                banner.style.display = "none";
             }
         }
     </script>
