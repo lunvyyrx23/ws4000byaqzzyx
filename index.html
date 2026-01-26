@@ -1,118 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <style>
-    /* 1. Reset and Font Force */
-    * {
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-        box-sizing: border-box !important;
-        font-family: 'Star4000', sans-serif !important;
-        text-transform: none !important;
-    }
-
+    /* 1. Global Reset & Font Loading */
     @font-face {
         font-family: 'Star4000';
+        /* Ensure the URL is exactly as provided in your storage */
         src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
+        font-display: swap;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        /* Force the font everywhere */
+        font-family: 'Star4000', Arial, sans-serif !important;
+        text-transform: none;
     }
 
     html, body {
-        width: 100% !important;
-        height: 100% !important;
-        background-color: #000 !important;
-        overflow: hidden !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
+        width: 100%;
+        height: 100%;
+        background-color: #111; /* Dark background so the screen pops */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: auto; /* Allow scrolling if your monitor is smaller than the 820px height */
     }
 
-    /* 2. Master Container */
+    /* 2. The Master Screen (Full PC Size) */
     #ws4000-screen {
         width: 1091px !important; 
         height: 820px !important;
-        flex-shrink: 0 !important;
-        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
-        background-size: 100% 100% !important; 
-        position: relative !important;
+        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png');
+        background-size: contain; 
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+        box-shadow: 0 0 50px #000; /* Adds a nice depth on PC */
+        flex-shrink: 0;
     }
 
-    /* 3. Mobile Scaling */
-    @media only screen and (max-width: 1090px) {
-        #ws4000-screen { transform: scale(0.35) !important; }
-    }
-
-    /* 4. Header (Top 50, Left 350) */
+    /* 3. Elements Positioning */
     .header {
-        color: #ffff00 !important;
-        font-size: 3rem !important;
-        text-shadow: 4px 4px #000 !important;
-        position: absolute !important;
-        top: 50px !important;   
-        left: 350px !important; 
+        color: #ffff00;
+        font-size: 3rem;
+        text-shadow: 4px 4px #000;
+        position: absolute;
+        top: 50px;   
+        left: 350px; 
     }
 
-    /* 5. WEATHER ICON: At 385px down */
     #weather-icon {
-        position: absolute !important;
-        top: 385px !important; 
-        left: 125px !important;
-        width: 150px !important;
-        height: auto !important;
+        position: absolute;
+        top: 385px; 
+        left: 125px;
+        width: 150px;
+        height: auto;
     }
 
-    /* 6. WIND SUBTEXT: Below icon */
     .icon-subtext {
-        position: absolute !important;
-        top: 580px !important; 
-        left: 125px !important;
-        color: #fff !important;
-        font-size: 2.2rem !important;
-        text-shadow: 4px 4px #000 !important;
-        white-space: pre !important;
+        position: absolute;
+        top: 580px; 
+        left: 125px;
+        color: #fff;
+        font-size: 2.2rem;
+        text-shadow: 4px 4px #000;
+        white-space: pre;
     }
 
-    /* 7. YELLOW LOCATION LABEL */
     .location-label {
-        position: absolute !important;
-        top: 220px !important; 
-        right: 120px !important; 
-        color: #ffff00 !important;
-        font-size: 2.2rem !important;
-        text-shadow: 4px 4px #000 !important;
+        position: absolute;
+        top: 220px; 
+        right: 120px; 
+        color: #ffff00;
+        font-size: 2.2rem;
+        text-shadow: 4px 4px #000;
     }
 
-    /* 8. TEMPERATURE (200px down) */
     #temp-value {
-        position: absolute !important;
-        top: 200px !important;
-        left: 100px !important; 
-        font-size: 8.8rem !important;
-        text-shadow: 8px 8px #000 !important;
-        color: #fff !important;
+        position: absolute;
+        top: 200px;
+        left: 100px; 
+        font-size: 8.8rem;
+        text-shadow: 8px 8px #000;
+        color: #fff;
     }
 
-    /* 9. MIST: At 335px down */
     .condition-label {
-        position: absolute !important;
-        top: 335px !important; 
-        left: 130px !important; 
-        font-size: 1.5rem !important;
-        text-shadow: 4px 4px #000 !important;
-        color: #fff !important;
+        position: absolute;
+        top: 335px; 
+        left: 130px; 
+        font-size: 1.5rem;
+        text-shadow: 4px 4px #000;
+        color: #fff;
     }
 
-    /* 10. WEATHER STATS: At 295px down, Left-shifted */
     .stats-box {
-        position: absolute !important;
-        top: 295px !important; 
-        right: 370px !important; 
-        font-size: 2.2rem !important;
-        line-height: 1.6 !important;
-        text-shadow: 4px 4px #000 !important;
-        color: #fff !important;
-        text-align: left !important;
+        position: absolute;
+        top: 295px; 
+        right: 370px; 
+        font-size: 2.2rem;
+        line-height: 1.6;
+        text-shadow: 4px 4px #000;
+        color: #fff;
     }
+
 </style>
 </head>
 <body>
