@@ -9,39 +9,50 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 
-// --- UPDATED WEATHER FETCH ---
 async function fetchWeather(lat, lon) {
     try {
-        const url = `https://api.weather.gov/points/${lat},${lon}`;
-        // Using AllOrigins to bypass CORS issues
-        const response = await fetch(`${PROXY}${encodeURIComponent(url)}`);
-        const data = JSON.parse((await response.json()).contents);
+        // Step 1: Get the Grid Point
+        const pointUrl = `https://api.weather.gov/points/${lat},${lon}`;
+        const pRes = await fetch(`${PROXY}${encodeURIComponent(pointUrl)}`);
+        const pRaw = await pRes.json();
+        const pData = JSON.parse(pRaw.contents);
         
-        const forecastUrl = data.properties.forecast;
-        const forecastRes = await fetch(`${PROXY}${encodeURIComponent(forecastUrl)}`);
-        const forecastData = JSON.parse((await forecastRes.json()).contents);
-        const current = forecastData.properties.periods[0];
+        // Step 2: Get the Forecast
+        const fUrl = pData.properties.forecast;
+        const fRes = await fetch(`${PROXY}${encodeURIComponent(fUrl)}`);
+        const fRaw = await fRes.json();
+        const fData = JSON.parse(fRaw.contents);
+        const cur = fData.properties.periods[0];
 
-        // Update UI
-        document.getElementById('station-name').textContent = data.properties.relativeLocation.properties.city.toUpperCase();
-        document.getElementById('big-temp').textContent = current.temperature + "°";
-        document.getElementById('cond-text').textContent = current.shortForecast.toUpperCase();
-        document.getElementById('wind-val').textContent = `${current.windDirection} ${current.windSpeed}`;
+        // Step 3: Update Screen
+        const city = pData.properties.relativeLocation.properties.city;
+        const state = pData.properties.relativeLocation.properties.state;
+        
+        document.getElementById('station-name').textContent = `${city}, ${state}`.toUpperCase();
+        document.getElementById('big-temp').textContent = cur.temperature + "°";
+        document.getElementById('cond-text').textContent = cur.shortForecast.toUpperCase();
+        document.getElementById('wind-val').textContent = `${cur.windDirection} ${cur.windSpeed}`;
     } catch (err) {
-        console.error(err);
-        document.getElementById('station-name').textContent = "STATION ERROR - RETRYING";
+        document.getElementById('station-name').textContent = "OFFLINE - RETRYING";
+        console.error("Weather Error:", err);
     }
 }
 
-// Controls
-function toggleDarkMode() { document.body.classList.toggle('dark-mode'); document.body.classList.toggle('light-mode'); }
-function toggleFullscreen() { document.getElementById('screen').classList.toggle('full-mode'); }
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    document.body.classList.toggle('light-mode');
+}
+
+function toggleFullscreen() {
+    document.getElementById('screen').classList.toggle('full-mode');
+}
 
 async function manualSearch() {
-    const city = document.getElementById('city-input').value;
-    const geo = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}`);
-    const res = await geo.json();
-    if(res[0]) fetchWeather(res[0].lat, res[0].lon);
+    const val = document.getElementById('city-input').value;
+    if(!val) return;
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${val}`);
+    const data = await res.json();
+    if(data[0]) fetchWeather(data[0].lat, data[0].lon);
 }
 
 window.onload = () => {
