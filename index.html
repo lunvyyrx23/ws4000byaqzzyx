@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +27,7 @@
         align-items: center !important;
     }
 
-    /* 2. The Master Screen Container (1091x820) */
+    /* 2. Master Container */
     #ws4000-screen {
         width: 1091px !important; 
         height: 820px !important;
@@ -38,32 +37,34 @@
         background-position: center !important;
         background-repeat: no-repeat !important;
         position: relative !important;
-        display: flex !important;
-        flex-direction: column !important;
         transform-origin: center center;
     }
 
-    /* 3. Adaptive Scaling for Mobile */
+    /* 3. Mobile Scaling */
     @media only screen and (max-width: 1090px) {
         #ws4000-screen { transform: scale(0.35) !important; }
     }
 
-    /* 4. HEADER: Stacked, Down 50px, Right 350px (Original 100 + 250) */
+    /* 4. Header (Remains at Top 50, Right 350) */
     .header {
         color: #ffff00 !important;
         font-size: 3rem !important;
         text-shadow: 4px 4px #000 !important;
         position: absolute !important;
         top: 50px !important;   
-        left: 350px !important; /* Moved right by an additional 250px */
+        left: 350px !important; 
         line-height: 1.1 !important;
     }
 
-    /* 5. TEMP & MIST: Smaller size */
+    /* 5. Temp & Mist: Mist Centered under 36 */
     .temp-box {
         position: absolute !important;
         top: 200px !important;
         left: 75px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important; /* Forces Mist to center under the Temp */
+        text-align: center !important;
     }
 
     #temp-value {
@@ -77,13 +78,14 @@
         font-size: 1.5rem !important;
         text-shadow: 4px 4px #000 !important;
         color: #fff !important;
+        width: 100% !important;
     }
 
-    /* 6. WEATHER STATS: Moved up by 100px (500 - 100 = 400px from top) */
+    /* 6. Weather Stats: Up 30px (400-30=370) and Left 45px */
     .stats-box {
         position: absolute !important;
-        top: 400px !important; /* Lifted up to 400px */
-        right: 75px !important;
+        top: 370px !important; /* Moved up 30px */
+        right: 120px !important; /* Increased right margin by 45px to move it left */
         font-size: 2.2rem !important;
         line-height: 1.6 !important;
         text-shadow: 4px 4px #000 !important;
