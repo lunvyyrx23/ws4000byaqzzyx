@@ -5,90 +5,88 @@
     body {
         margin: 0;
         padding: 0;
-        /* Using the ws4000.png as the base background */
+        /* THE FULL URL TO THE NEOCITIES BACKGROUND ASSET */
         background-image: url('https://ws4000.neocities.org/ws4000.png');
-        background-size: cover;
-        background-position: center;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
         background-attachment: fixed;
         color: white;
-        font-family: sans-serif;
+        font-family: 'Segoe UI', sans-serif; /* Best iPad fallback for the 4000 look */
         height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         overflow: hidden;
     }
 
-    /* THE SOFT LIGHT SIDEBAR (Light to Blue Gradient) */
+    /* THE SOFT LIGHT SIDEBAR */
     #sidebar {
         position: fixed;
         left: 0;
         top: 0;
         width: 190px;
         height: 100%;
-        /* Adjusted for the "Soft Light" look over the PNG */
-        background: linear-gradient(90deg, rgba(173, 216, 230, 0.5) 0%, rgba(30, 144, 255, 0.2) 100%);
-        border-right: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 25px 15px;
+        /* Light to Blue gradient with transparency */
+        background: linear-gradient(90deg, rgba(173, 216, 230, 0.4) 0%, rgba(15, 123, 213, 0.1) 100%);
+        border-right: 2px solid rgba(255, 255, 255, 0.2);
+        padding: 30px 15px;
         z-index: 10;
-        backdrop-filter: blur(4px);
+        backdrop-filter: blur(5px); /* Softens the light over the background image */
     }
 
-    /* THE WEATHER BOX (Centered Blue Window) */
-    #weather-box {
-        width: 70%;
-        height: 65%;
-        background: rgba(16, 52, 166, 0.85); /* Slightly transparent to see the PNG */
-        border: 4px solid #1a4cd1;
-        box-shadow: 0 0 20px rgba(0,0,0,0.8);
-        padding: 40px;
-        margin-left: 100px;
+    #sidebar-label {
+        color: #ffaa00; /* Classic WS4000 Orange/Gold */
+        font-weight: bold;
+        font-size: 1.25rem;
+        text-shadow: 2px 2px #000;
+        line-height: 1.1;
+        text-transform: uppercase;
+    }
+
+    /* MAIN DISPLAY LAYER */
+    #main-content {
+        margin-left: 190px;
+        padding: 60px;
         position: relative;
+        z-index: 5;
     }
 
-    .header-text {
-        color: #ffff00; /* Authentic Yellow */
-        font-size: 2.5rem;
+    .header-yellow {
+        color: #ffff00; /* Bright yellow for visibility */
+        font-size: 2.8rem;
         font-weight: bold;
-        text-shadow: 2px 2px #000;
-        margin-bottom: 5px;
+        text-shadow: 3px 3px #000;
+        text-transform: uppercase;
     }
 
-    #temp-display {
-        font-size: 9rem;
+    #temp-val {
+        font-size: 11rem;
         font-weight: bold;
-        text-shadow: 4px 4px #000;
+        text-shadow: 5px 5px #000;
+        margin: 10px 0;
     }
 
-    .stats {
-        font-size: 2rem;
-        line-height: 1.8;
+    .details {
+        font-size: 2.2rem;
+        line-height: 1.6;
         text-shadow: 2px 2px #000;
+        font-weight: bold;
     }
 </style>
 </head>
 <body>
 
     <div id="sidebar">
-        <div style="color: #ffaa00; font-weight: bold; font-size: 1.2rem;">LOCAL<br>FORECAST</div>
+        <div id="sidebar-label">LOCAL<br>FORECAST</div>
     </div>
 
-    <div id="weather-box">
-        <div class="header-text">Current Conditions</div>
-        <div style="font-size: 1.8rem; margin-bottom: 20px; color: #ffff00;">Local Station Data</div>
+    <div id="main-content">
+        <div class="header-yellow">Current Conditions</div>
         
-        <div style="display: flex; justify-content: space-between;">
-            <div>
-                <div id="temp-display">36°</div>
-                <div style="font-size: 2.2rem;">Mist</div>
-            </div>
-            
-            <div class="stats">
-                Humidity: 92%<br>
-                Dewpoint: 34°<br>
-                Wind: Calm<br>
-                Pressure: 30.12
-            </div>
+        <div id="temp-val">36°</div>
+        
+        <div class="details">
+            MIST / LIGHT RAIN<br>
+            WIND: CALM<br>
+            HUMIDITY: 92%<br>
+            DEWPOINT: 34°
         </div>
     </div>
 
