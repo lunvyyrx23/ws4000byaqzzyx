@@ -3,12 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WS4000 Static UI</title>
+    <title>WS4000 Boot Sequence</title>
     <style>
         @font-face {
             font-family: "Star4000";
             src: url("https://wsbylunv.neocities.org/Star4000.ttf") format("truetype");
         }
+
+        /* --- LOADING SCREEN STYLES --- */
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000; color: #00ff00; z-index: 9999;
+            font-family: monospace; padding: 40px; box-sizing: border-box;
+            display: flex; flex-direction: column; justify-content: flex-start;
+            transition: opacity 1s ease-out; /* Fades out at the end */
+        }
+
+        .boot-log { font-size: 1.2rem; line-height: 1.6; margin: 0; }
+        .cursor { display: inline-block; width: 10px; height: 1.2rem; background: #00ff00; animation: blink 0.8s infinite; vertical-align: middle; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* --- DASHBOARD STYLES (Your existing UI) --- */
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
             background: #050505; display: flex; overflow: hidden;
@@ -18,41 +33,33 @@
             width: 280px; height: 100vh; background: #111;
             border-right: 2px solid #333; padding: 20px; box-sizing: border-box;
         }
-        input {
-            width: 100%; padding: 12px; margin-bottom: 10px;
-            background: #000; border: 1px solid #444; color: #fff;
-            font-size: 16px; border-radius: 4px; box-sizing: border-box;
-        }
-        button {
-            width: 100%; padding: 12px; background: #2255aa;
-            color: white; border: none; border-radius: 4px; cursor: pointer;
-            font-family: "Star4000";
-        }
         .label { color: #666; font-size: 0.7rem; margin-top: 15px; text-transform: uppercase; }
         .val { color: #00ffff; font-size: 1.2rem; text-transform: uppercase; }
         #temp-val { color: #fff; font-size: 3.5rem; margin: 5px 0; }
-        #stat-val { font-size: 0.7rem; margin-top: 5px; color: #888; }
-        
         #screen-container { flex-grow: 1; background: black; display: flex; justify-content: center; align-items: center; }
         #bg { width: 100%; height: 100%; object-fit: contain; }
     </style>
 </head>
-<body>
+<body onload="startBoot()">
+
+    <div id="loading-screen">
+        <p class="boot-log" id="log-1">WEATHER STAR 4000 ROM V.4.1 BETA</p>
+        <p class="boot-log" id="log-2"></p>
+        <p class="boot-log" id="log-3"></p>
+        <p class="boot-log" id="log-4"></p>
+        <p class="boot-log" id="log-5"></p>
+        <div id="boot-cursor" class="cursor"></div>
+    </div>
 
     <div id="sidebar">
         <h2 style="color:#ffff00; font-size:0.9rem; margin-bottom: 15px;">STATION ID</h2>
-        <input type="text" id="city-input" placeholder="Input Disabled">
-        <button disabled style="opacity: 0.5; cursor: default;">OFFLINE</button>
-        
         <div id="weather-info">
-            <div class="label">CURRENT LOCATION</div>
-            <div id="city-name" class="val">MANUAL MODE</div>
-            
-            <div class="label">LOCAL TEMPERATURE</div>
-            <div id="temp-val">72°</div>
-            
-            <div class="label">SYSTEM STATUS</div>
-            <div id="stat-val">UI PREVIEW ONLY</div>
+            <div class="label">LOCATION</div>
+            <div id="city-name" class="val">---</div>
+            <div class="label">TEMPERATURE</div>
+            <div id="temp-val">--°</div>
+            <div class="label">STATUS</div>
+            <div id="stat-val" style="color:#888;">STANDBY</div>
         </div>
     </div>
 
@@ -60,5 +67,28 @@
         <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png">
     </div>
 
+    <script>
+        const logs = [
+            { id: "log-2", text: "RAM TEST....................OK", delay: 800 },
+            { id: "log-3", text: "VRTX-32 KERNEL..............LOADED", delay: 1500 },
+            { id: "log-4", text: "SATELLITE SYNC..............ACQUIRED", delay: 2200 },
+            { id: "log-5", text: "BOOTING INTERFACE...", delay: 3000 }
+        ];
+
+        function startBoot() {
+            logs.forEach(item => {
+                setTimeout(() => {
+                    document.getElementById(item.id).textContent = item.text;
+                }, item.delay);
+            });
+
+            // Fade out the whole screen after 4 seconds
+            setTimeout(() => {
+                const screen = document.getElementById('loading-screen');
+                screen.style.opacity = '0';
+                setTimeout(() => { screen.style.display = 'none'; }, 1000);
+            }, 4000);
+        }
+    </script>
 </body>
 </html>
