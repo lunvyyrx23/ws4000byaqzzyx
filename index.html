@@ -1,45 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
 <style>
     body {
         margin: 0;
         padding: 0;
-        /* The Authentic 1990s TWC Gradient */
+        /* The Deep Blue Background */
         background: linear-gradient(180deg, #1c5c77 0%, #031b60 100%);
         color: white;
-        font-family: sans-serif; /* Add your Star4000 font link back here if you have it */
+        font-family: sans-serif;
         height: 100vh;
         overflow: hidden;
     }
 
-    /* THE PERMANENT SIDEBAR */
+    /* THE SOFT LIGHT SIDEBAR */
     #sidebar {
         position: fixed;
         left: 0;
         top: 0;
-        width: 180px;
+        width: 190px;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.4);
-        border-right: 4px solid #ffaa00; /* Gold divider */
+        /* This creates the "Soft Light to Blue" translucent look */
+        background: linear-gradient(90deg, rgba(122, 215, 240, 0.4) 0%, rgba(15, 123, 213, 0.2) 100%);
+        border-right: 2px solid rgba(255, 255, 255, 0.3); /* Subtle glass edge */
         padding: 25px 15px;
         box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
+        backdrop-filter: blur(5px); /* This makes it look "Soft" on modern browsers */
     }
 
     #sidebar-title {
         color: #ffaa00;
-        font-size: 1.2rem;
-        line-height: 1;
+        font-size: 1.3rem;
+        line-height: 1.1;
         font-weight: bold;
-        margin-bottom: 30px;
         text-shadow: 2px 2px #000;
+        margin-bottom: 40px;
     }
 
-    /* MAIN DISPLAY AREA */
     #main-display {
-        margin-left: 180px;
+        margin-left: 190px;
         padding: 60px;
         display: flex;
         flex-direction: column;
@@ -50,7 +46,6 @@
         color: #ffaa00;
         text-shadow: 3px 3px #000;
         text-transform: uppercase;
-        margin-bottom: 20px;
     }
 
     #temp-display {
@@ -61,51 +56,8 @@
     }
 
     .stats {
-        font-size: 2rem;
-        line-height: 1.6;
+        font-size: 2.2rem;
+        line-height: 1.8;
         text-shadow: 2px 2px #000;
     }
-
-    /* LOWER DISPLAY LINE (CRAWL) */
-    #bottom-ticker {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: #000;
-        border-top: 3px solid #ffaa00;
-        padding: 10px;
-        font-size: 1.5rem;
-        color: #ffaa00;
-        white-space: nowrap;
-    }
 </style>
-</head>
-<body>
-
-    <div id="sidebar">
-        <div id="sidebar-title">LOCAL<br>FORECAST</div>
-        <div style="font-size: 0.8rem; color: #ffaa00;">JAN 26 2026</div>
-        
-        <div style="margin-top: auto; font-size: 0.7rem; color: #00ffff;">
-            UNITS: ENGLISH
-        </div>
-    </div>
-
-    <div id="main-display">
-        <div class="header-text">CURRENT CONDITIONS</div>
-        <div id="temp-display">36°</div>
-        
-        <div class="stats">
-            WIND: CALM<br>
-            HUMIDITY: 92%<br>
-            DEWPOINT: 34°
-        </div>
-    </div>
-
-    <div id="bottom-ticker">
-        MIST AND COLD RAIN CONTINUING THROUGH THE EVENING...
-    </div>
-
-</body>
-</html>
