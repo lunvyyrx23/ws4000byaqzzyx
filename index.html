@@ -23,76 +23,84 @@
         width: 100% !important;
         height: 100% !important;
         overflow: hidden !important;
-        background-color: #000;
+        background-color: #000; /* Black bars around the smaller image */
     }
 
     body {
-        /* FORCING THE CENTER ANCHOR */
+        /* CENTERED ORIGINAL SIZE */
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
         background-repeat: no-repeat !important;
-        background-position: center center !important; /* Force to the dead center */
-        background-size: cover !important; /* Ensures it fills the screen from the center out */
-        background-attachment: fixed !important; /* Keeps it from shifting during touch/scroll */
+        background-position: center center !important; 
+        background-size: auto !important; /* Forces original pixel size */
         
         display: flex;
         flex-direction: column;
-        padding: 6% 8%;
+        justify-content: center; /* Centers text vertically */
+        align-items: center;    /* Centers text horizontally */
     }
 
-    /* 2. Text Layout */
+    /* 2. Text Layout (Adjusted to sit over the centered image) */
+    #main-container {
+        width: 640px;  /* Typical original WS4000 width, adjust if your image is different */
+        height: 480px; /* Typical original height */
+        display: flex;
+        flex-direction: column;
+        padding: 40px;
+    }
+
     .header {
         color: #ffff00 !important;
-        font-size: 3.2rem;
-        text-shadow: 4px 4px #000;
-        margin-bottom: 30px !important;
+        font-size: 2.5rem;
+        text-shadow: 3px 3px #000;
+        margin-bottom: 20px !important;
     }
 
     .data-container {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
         width: 100%;
     }
 
     #temp-value {
-        font-size: 13rem;
+        font-size: 10rem;
         line-height: 0.9;
-        text-shadow: 8px 8px #000;
+        text-shadow: 6px 6px #000;
         color: white;
     }
 
     .condition-text {
-        font-size: 2.8rem;
-        text-shadow: 4px 4px #000;
+        font-size: 2.2rem;
+        text-shadow: 3px 3px #000;
         color: white;
         margin-top: 5px !important;
     }
 
     .stats-column {
-        font-size: 2.4rem;
+        font-size: 2rem;
         line-height: 1.5;
-        text-shadow: 4px 4px #000;
+        text-shadow: 3px 3px #000;
         color: white;
-        padding-right: 5%;
     }
 </style>
 </head>
 <body>
 
-    <div class="header">Current Conditions</div>
+    <div id="main-container">
+        <div class="header">Current Conditions</div>
 
-    <div class="data-container">
-        <div class="temp-section">
-            <div id="temp-value">36°</div>
-            <div class="condition-text">Mist</div>
-        </div>
+        <div class="data-container">
+            <div class="temp-section">
+                <div id="temp-value">36°</div>
+                <div class="condition-text">Mist</div>
+            </div>
 
-        <div class="stats-column">
-            Wind: Calm<br>
-            Humidity: 92%<br>
-            Dewpoint: 34°<br>
-            Ceiling: Unl<br>
-            Visib: 10 Mi
+            <div class="stats-column">
+                Wind: Calm<br>
+                Humidity: 92%<br>
+                Dewpoint: 34°<br>
+                Ceiling: Unl<br>
+                Visib: 10 Mi
+            </div>
         </div>
     </div>
 
