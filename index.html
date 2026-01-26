@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <style>
-    /* 1. RESET AND FONT FORCE */
+    /* 1. Reset and Font Force */
     * {
         margin: 0 !important;
         padding: 0 !important;
@@ -17,41 +17,43 @@
         src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
     }
 
-    /* 2. BACKGROUND COLOR ONLY ON BODY */
+    /* 2. Setup the Canvas */
     html, body {
         width: 100% !important;
         height: 100% !important;
-        background-color: #000 !important; /* Forces the rest of the screen black */
-        overflow: hidden !important;
+        background-color: #000 !important;
+        /* Allowing scroll in case 1347px is taller than the iPad screen */
+        overflow: auto !important; 
         display: flex !important;
-        align-items: center !important;
         justify-content: center !important;
+        align-items: center !important;
     }
 
-    /* 3. THE IMAGE CONTAINER - LOCKED TO ORIGINAL SIZE */
+    /* 3. The 1797x1347 Screen Container */
     #ws4000-screen {
-        /* This container forces the size to be the image's original size */
-        /* If your image is 640x480, change these to match exactly */
-        width: 640px !important; 
-        height: 480px !important;
+        /* FORCING EXACT DIMENSIONS */
+        width: 1797px !important; 
+        height: 1347px !important;
+        flex-shrink: 0 !important; /* Prevents browser from trying to squish it */
         
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
-        background-size: auto !important; /* Forces original size, no stretching */
+        background-size: auto !important; 
         background-position: center !important;
         background-repeat: no-repeat !important;
         
         position: relative !important;
-        padding: 40px !important;
+        /* Padding relative to this large size */
+        padding: 100px 120px !important; 
         display: flex !important;
         flex-direction: column !important;
     }
 
-    /* 4. TEXT STYLES */
+    /* 4. Text Styles Scaled for the Larger Resolution */
     .header {
         color: #ffff00 !important;
-        font-size: 2.2rem !important;
-        text-shadow: 3px 3px #000 !important;
-        margin-bottom: 25px !important;
+        font-size: 5rem !important; /* Made larger to match the high res */
+        text-shadow: 6px 6px #000 !important;
+        margin-bottom: 60px !important;
     }
 
     .data-row {
@@ -61,23 +63,23 @@
     }
 
     #temp-value {
-        font-size: 9rem !important;
+        font-size: 20rem !important; /* Massive temp for high res */
         line-height: 0.8 !important;
-        text-shadow: 6px 6px #000 !important;
+        text-shadow: 12px 12px #000 !important;
         color: #fff !important;
     }
 
     .condition-label {
-        font-size: 2rem !important;
-        text-shadow: 3px 3px #000 !important;
+        font-size: 4.5rem !important;
+        text-shadow: 6px 6px #000 !important;
         color: #fff !important;
-        margin-top: 5px !important;
+        margin-top: 15px !important;
     }
 
     .stats-box {
-        font-size: 1.8rem !important;
-        line-height: 1.4 !important;
-        text-shadow: 3px 3px #000 !important;
+        font-size: 3.8rem !important;
+        line-height: 1.6 !important;
+        text-shadow: 6px 6px #000 !important;
         color: #fff !important;
     }
 </style>
