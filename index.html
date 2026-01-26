@@ -76,72 +76,49 @@
     </div>
 
 <script>
-    // Using a more reliable iPad-friendly proxy
-    const proxy = "https://api.allorigins.win/raw?url=";
-    const userAgent = "WS4000-iPad-Sim/1.0";
-
-    async function updateStation(lat, lon, name) {
-        const statusDiv = document.getElementById('status');
-        statusDiv.style.color = "#ffff00"; // Yellow for visibility
-        statusDiv.textContent = "Connecting...";
-
-        try {
-            // STEP 1: Point Lookup
-            const ptUrl = `${proxy}${encodeURIComponent(`https://api.weather.gov/points/${lat},${lon}`)}`;
-            const ptRes = await fetch(ptUrl);
-            if (!ptRes.ok) throw new Error("NWS Blocked: " + ptRes.status);
-            const pt = await ptRes.json();
-            
-            // STEP 2: Station Lookup
-            const stRes = await fetch(`${proxy}${encodeURIComponent(pt.properties.observationStations)}`);
-            const st = await stRes.json();
-            
-            // STEP 3: Latest Data
-            const latestUrl = `${proxy}${encodeURIComponent(`${st.features[0].id}/observations/latest`)}`;
-            const obsRes = await fetch(latestUrl);
-            const obs = await obsRes.json();
-            const cur = obs.properties;
-
-            // --- UNIT FIX ---
-            const toF = (val, unit) => {
-                if (val === null) return null;
-                return (unit && unit.includes('degC')) ? (val * 9/5) + 32 : val;
-            };
-
-            const tempF = toF(cur.temperature.value, cur.temperature.unitCode);
-            
-            // --- UPDATE UI ---
-            document.getElementById('city-out').textContent = name;
-            document.getElementById('temp-num').textContent = Math.round(tempF);
-            document.getElementById('wind').textContent = Math.round(cur.windSpeed.value * 2.236 || 0);
-            document.getElementById('hum').textContent = Math.round(cur.relativeHumidity.value) + "%";
-            document.getElementById('press').textContent = (cur.barometricPressure.value * 0.000295).toFixed(2);
-            document.getElementById('dew').textContent = Math.round(toF(cur.dewpoint.value, cur.dewpoint.unitCode));
-
-            statusDiv.style.color = "#00ffff";
-            statusDiv.textContent = "NWS Live: Online";
-            checkAlerts(lat, lon);
-
-        } catch(e) { 
-            // This will show you exactly what's wrong on your iPad screen
-            statusDiv.style.color = "#ff0000";
-            statusDiv.textContent = "Error: " + e.message;
-        }
-    }
-
-    // Initialize with manual search capability for iPad users
     async function manualSearch() {
         const query = document.getElementById('city-input').value.trim();
+        const status = document.getElementById('status');
         if(!query) return;
-        document.getElementById('status').textContent = "Finding " + query + "...";
+
+        status.textContent = "Orion: Fetching Geocode...";
+
         try {
-            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1`);
-            const data = await res.json();
-            if(data.results) {
-                const loc = data.results[0];
-                updateStation(loc.latitude, loc.longitude, loc.name);
+            // Step 1: Geocode (Direct call)
+            const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1`);
+            const geoData = await geoRes.json();
+
+            if (!geoData.results) {
+                status.textContent = "Error: City not found.";
+                return;
             }
-        } catch(e) { document.getElementById('status').textContent = "Geo Error"; }
+
+            const { latitude, longitude, name } = geoData.results[0];
+            status.textContent = `Orion: Found ${name}. Fetching 36° Data...`;
+
+            // Step 2: Weather (Asking for Fahrenheit directly)
+            const wUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`;
+            
+            const wRes = await fetch(wUrl);
+            const wData = await wRes.json();
+            const now = wData.current;
+
+            // Step 3: UI Update
+            document.getElementById('city-out').textContent = name;
+            document.getElementById('temp-num').textContent = Math.round(now.temperature_2m);
+            document.getElementById('wind').textContent = Math.round(now.wind_speed_10m);
+            document.getElementById('hum').textContent = Math.round(now.relative_humidity_2m) + "%";
+
+            status.innerHTML = `ONLINE | Feels Like: <span style="color:#fff">${Math.round(now.apparent_temperature)}°</span>`;
+            
+            // Success! Close the menu
+            document.getElementById('sidebar').classList.remove('open');
+
+        } catch (e) {
+            // This is the debug line for your iPad screen
+            status.textContent = "ORION ERROR: " + e.message;
+            console.error(e);
+        }
     }
 </script>
 </body>
