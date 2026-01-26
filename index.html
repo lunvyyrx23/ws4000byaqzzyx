@@ -2,36 +2,39 @@
 <html>
 <head>
 <style>
+    /* LOADING THE CUSTOM FONT */
+    @font-face {
+        font-family: 'Star4000';
+        /* Replace this URL with the actual link to your font file if different */
+        src: url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
     body {
         margin: 0;
         padding: 0;
-        background-color: #000; /* Deep black background for the "theater" look */
+        background-color: #000; 
         color: white;
-        font-family: sans-serif;
+        /* Applying the font to the whole page */
+        font-family: 'Star4000', sans-serif; 
         height: 100vh;
         width: 100vw;
         display: flex;
-        align-items: center; /* Vertical center */
-        justify-content: center; /* Horizontal center */
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
     }
 
-    /* THE CENTERED IMAGE CONTAINER */
     #display-area {
-        /* Adjust these percentages to change how much of the screen the box takes */
         width: 85%; 
         height: 75%;
-        
-        /* THE IMAGE SOURCE */
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        
-        /* The "Beveled" frame look from the original units */
         border: 4px solid #1a4cd1; 
         box-shadow: 0 0 50px rgba(0,0,0,0.9);
-        
         padding: 60px;
         box-sizing: border-box;
         display: flex;
@@ -39,38 +42,29 @@
         justify-content: center;
     }
 
-    /* Sidebar is hidden for now */
-    #sidebar {
-        display: none;
-    }
-
     .yellow-title {
         color: #ffff00;
-        font-size: 2.8rem;
-        font-weight: bold;
+        font-size: 3rem;
         text-shadow: 3px 3px #000;
         text-transform: uppercase;
         margin: 0;
+        letter-spacing: 2px;
     }
 
     #temp-value {
-        font-size: 11rem;
-        font-weight: bold;
+        font-size: 12rem;
         text-shadow: 6px 6px #000;
-        margin: 10px 0;
+        margin: 5px 0;
     }
 
     .weather-details {
-        font-size: 2.2rem;
-        line-height: 1.6;
+        font-size: 2.5rem;
+        line-height: 1.4;
         text-shadow: 3px 3px #000;
-        font-weight: bold;
     }
 </style>
 </head>
 <body>
-
-    <div id="sidebar"></div>
 
     <div id="display-area">
         <div class="yellow-title">Current Conditions</div>
