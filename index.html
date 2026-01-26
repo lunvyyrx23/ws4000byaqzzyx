@@ -1,129 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>aqzzyxs WS4000+ | Sidebar Edition</title>
-    <style>
-        @font-face {
-            font-family: "Star4000";
-            src: url("https://wsbylunv.neocities.org/Star4000.ttf") format("truetype");
-        }
-        body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: "Star4000", sans-serif; display: flex; }
+<style>
+    /* --- COMPACT SETTINGS TOGGLE --- */
+    #settings-gear {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: 35px;
+        height: 35px;
+        background: #222;
+        border: 2px solid #444;
+        color: #ffff00;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 100;
+        font-size: 1.2rem;
+        box-shadow: 2px 2px 0px #000;
+    }
+    #settings-gear:hover { background: #333; border-color: #ffff00; }
 
-        /* --- SIDEBAR --- */
-        #sidebar {
-            width: 280px; height: 100%; background: #111; border-right: 2px solid #333;
-            padding: 20px; box-sizing: border-box; z-index: 10;
-        }
-        h2 { color: #ffff00; font-size: 0.9rem; margin-bottom: 15px; }
-        input { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; font-family: "Star4000"; margin-bottom: 10px; box-sizing: border-box;}
-        button { width: 100%; padding: 12px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: "Star4000"; }
-        .label { color: #666; font-size: 0.7rem; margin-top: 15px; text-transform: uppercase; }
-        .val { color: #00ffff; font-size: 1.2rem; }
+    /* --- SLIDE-OUT DRAWER --- */
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -300px; /* Hidden by default */
+        width: 280px;
+        height: 100%;
+        background: #111;
+        border-right: 3px solid #ffff00;
+        padding: 20px;
+        box-sizing: border-box;
+        transition: left 0.3s ease-in-out;
+        z-index: 99;
+    }
+    #sidebar.open { left: 0; }
 
-        /* --- MAIN DISPLAY --- */
-        #display-container { position: relative; flex-grow: 1; background: #000; display: flex; justify-content: center; align-items: center; }
-        #bg-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
-        #data-layer { position: absolute; inset: 0; z-index: 2; color: white; text-shadow: 3px 3px #000; pointer-events: none; }
+    /* --- SIDEBAR CONTENT --- */
+    .drawer-title { color: #ffff00; font-size: 0.8rem; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; font-family: "Star4000"; margin-bottom: 10px; }
+    .side-btn { width: 100%; padding: 10px; background: #2255aa; color: white; border: none; cursor: pointer; font-family: "Star4000"; }
+</style>
 
-        .header { position: absolute; top: 12%; left: 8%; color: #ffff00; font-size: 1.8rem; }
-        .city { position: absolute; top: 25%; left: 8%; font-size: 2.2rem; }
-        #temp-box { position: absolute; top: 25%; right: 12%; font-size: 8rem; letter-spacing: -5px; }
-        .stats { position: absolute; bottom: 15%; left: 8%; font-size: 1.4rem; line-height: 1.8; }
-        .yellow { color: #ffff00; margin-right: 15px; }
+<div id="settings-gear" onclick="toggleSidebar()">⚙</div>
 
-        #boot-screen { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s; }
-        .boot-t { font-size: 1.5rem; color: #ffff00; opacity: 0; margin: 10px; }
-        .active { opacity: 1; }
-    </style>
-</head>
-<body onload="init()">
-
-    <div id="boot-screen">
-        <div id="bt1" class="boot-t">aqzzyxs WeatherStar 4000+</div>
-        <div id="bt2" class="boot-t" style="color:white; font-size: 1rem;">LOCATING LOCAL SATELLITE...</div>
+<div id="sidebar" id="drawer">
+    <div class="drawer-title">STATION DIAGNOSTICS</div>
+    <input type="text" id="city-in" placeholder="NEW CITY/ZIP">
+    <button class="side-btn" onclick="manualSearch()">UPDATE LINK</button>
+    
+    <div style="margin-top:30px; font-size: 0.7rem; color: #666;">
+        SYSTEM: aqzzyxs-v4.1<br>
+        LINK: <span style="color:#00ff00">ENCRYPTED</span>
     </div>
+</div>
 
-    <div id="sidebar">
-        <h2>STATION CONTROL</h2>
-        <input type="text" id="city-in" placeholder="Enter City/Zip">
-        <button onclick="manualSearch()">UPDATE</button>
-        
-        <div class="label">CURRENT SYSTEM</div>
-        <div id="side-city" class="val">---</div>
-        <div class="label">STATUS</div>
-        <div id="side-stat" class="val" style="font-size: 0.8rem;">READY</div>
-    </div>
-
-    <div id="display-container">
-        <img id="bg-img" src="https://wsbylunv.neocities.org/ws4000_bg.png">
-        <div id="data-layer">
-            <div class="header">CURRENT CONDITIONS</div>
-            <div class="city" id="city-out">SCANNING...</div>
-            <div id="temp-box"><span id="temp-num">--</span>°</div>
-            <div class="stats">
-                <div><span class="yellow">HUMIDITY:</span> <span id="hum">--</span>%</div>
-                <div><span class="yellow">WIND:</span> <span id="wind">--</span> MPH</div>
-                <div><span class="yellow">DEW POINT:</span> <span id="dew">--</span>°</div>
-                <div><span class="yellow">PRESSURE:</span> <span id="press">--</span> IN</div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        async function init() {
-            document.getElementById('bt1').classList.add('active');
-            setTimeout(() => document.getElementById('bt2').classList.add('active'), 1000);
-            
-            navigator.geolocation.getCurrentPosition(
-                async (p) => { loadWeather(p.coords.latitude, p.coords.longitude); },
-                () => { loadWeather(40.71, -74.00); }, // Default to NYC if blocked
-                { enableHighAccuracy: true, timeout: 5000 }
-            );
-        }
-
-        async function manualSearch() {
-            const query = document.getElementById('city-in').value;
-            if(!query) return;
-            document.getElementById('side-stat').textContent = "SEARCHING...";
-            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1`);
-            const data = await res.json();
-            if(data.results) loadWeather(data.results[0].latitude, data.results[0].longitude);
-        }
-
-        async function loadWeather(lat, lon) {
-            try {
-                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m,dew_point_2m,surface_pressure&temperature_unit=fahrenheit&wind_speed_unit=mph`);
-                const d = await res.json();
-                const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-                const gD = await geo.json();
-
-                const cityName = (gD.address.city || gD.address.town || gD.address.village || "LOCAL").toUpperCase();
-                
-                // Update Main Screen
-                document.getElementById('city-out').textContent = cityName;
-                document.getElementById('temp-num').textContent = Math.round(d.current_weather.temperature);
-                document.getElementById('hum').textContent = d.hourly.relative_humidity_2m[0];
-                document.getElementById('wind').textContent = Math.round(d.current_weather.windspeed);
-                document.getElementById('dew').textContent = Math.round(d.hourly.dew_point_2m[0]);
-                document.getElementById('press').textContent = (d.hourly.surface_pressure[0] * 0.02953).toFixed(2);
-                
-                // Update Sidebar
-                document.getElementById('side-city').textContent = cityName;
-                document.getElementById('side-stat').textContent = "ONLINE";
-                document.getElementById('side-stat').style.color = "#00ff00";
-
-                closeBoot();
-            } catch(e) { document.getElementById('side-stat').textContent = "OFFLINE"; }
-        }
-
-        function closeBoot() {
-            setTimeout(() => {
-                document.getElementById('boot-screen').style.opacity = '0';
-                setTimeout(() => document.getElementById('boot-screen').style.display = 'none', 1000);
-            }, 1500);
-        }
-    </script>
-</body>
-</html>
+<script>
+    function toggleSidebar() {
+        const side = document.getElementById('sidebar');
+        side.classList.toggle('open');
+        // Change icon based on state
+        const gear = document.getElementById('settings-gear');
+        gear.textContent = side.classList.contains('open') ? "✕" : "⚙";
+    }
+</script>
