@@ -27,25 +27,40 @@
         align-items: center !important;
     }
 
-    /* 2. The 1091x820 Screen Container */
+    /* 2. The Master Screen Container */
     #ws4000-screen {
-        /* EXACT DIMENSIONS REQUESTED */
         width: 1091px !important; 
         height: 820px !important;
         flex-shrink: 0 !important;
-        
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
         background-size: 100% 100% !important; 
         background-position: center !important;
         background-repeat: no-repeat !important;
-        
         position: relative !important;
         padding: 60px 75px !important; 
         display: flex !important;
         flex-direction: column !important;
+        /* Ensure it scales from the center */
+        transform-origin: center center;
     }
 
-    /* 3. Text Styles Adjusted for 1091x820 */
+    /* 3. PHONE DETECTION & SCALING (Smaller) */
+    @media only screen and (max-width: 1090px) {
+        #ws4000-screen {
+            /* Scale it down to 35% of original size for phones */
+            /* You can change 0.35 to 0.4 or 0.5 to dial it in */
+            transform: scale(0.35) !important;
+        }
+    }
+
+    /* 4. PC DETECTION (Bigger/Full Size) */
+    @media only screen and (min-width: 1091px) {
+        #ws4000-screen {
+            transform: scale(1.0) !important;
+        }
+    }
+
+    /* 5. Text Styles */
     .header {
         color: #ffff00 !important;
         font-size: 3rem !important;
