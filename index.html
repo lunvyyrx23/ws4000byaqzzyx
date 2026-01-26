@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WS4000 Smart Station</title>
+    <title>WS4000 Open-Meteo Edition</title>
     <style>
         @font-face {
             font-family: "Star4000";
@@ -11,11 +11,11 @@
         }
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background: #0a0a0a; display: flex; overflow: hidden;
+            background: #050505; display: flex; overflow: hidden;
             font-family: "Star4000", sans-serif; color: white;
         }
         #sidebar {
-            width: 280px; height: 100vh; background: #151515;
+            width: 280px; height: 100vh; background: #111;
             border-right: 2px solid #333; padding: 20px; box-sizing: border-box;
         }
         input {
@@ -28,9 +28,11 @@
             color: white; border: none; border-radius: 4px; cursor: pointer;
             font-family: "Star4000";
         }
-        .label { color: #777; font-size: 0.75rem; margin-top: 15px; }
-        .val { color: #00ffff; font-size: 1.3rem; text-transform: uppercase; }
+        .label { color: #666; font-size: 0.7rem; margin-top: 15px; text-transform: uppercase; }
+        .val { color: #00ffff; font-size: 1.2rem; text-transform: uppercase; }
         #temp-val { color: #fff; font-size: 3.5rem; margin: 5px 0; }
+        #stat-val { font-size: 0.7rem; margin-top: 5px; color: #555; }
+
         #screen-container { flex-grow: 1; background: black; display: flex; justify-content: center; align-items: center; }
         #bg { width: 100%; height: 100%; object-fit: contain; }
     </style>
@@ -38,17 +40,19 @@
 <body>
 
     <div id="sidebar">
-        <h2 style="color:#ffff00; font-size:1rem;">CITY SEARCH</h2>
-        <input type="text" id="city-input" placeholder="e.g. Chicago">
-        <button onclick="getWeather()">SET LOCATION</button>
+        <h2 style="color:#ffff00; font-size:0.9rem; margin-bottom: 15px;">STATION SEARCH</h2>
+        <input type="text" id="city-input" placeholder="e.g. Miami">
+        <button onclick="getWeather()">CONNECT</button>
         
         <div id="weather-info">
             <div class="label">LOCATION</div>
             <div id="city-name" class="val">---</div>
+            
             <div class="label">TEMPERATURE</div>
             <div id="temp-val">--°</div>
+            
             <div class="label">STATUS</div>
-            <div id="stat-val" style="color:#888; font-size:0.7rem;">READY</div>
+            <div id="stat-val">READY (NO KEY REQ)</div>
         </div>
     </div>
 
@@ -57,44 +61,53 @@
     </div>
 
     <script>
-        const API_KEY = "ed60fcfbd110e408016b4fa1356f9160";
-
         async function getWeather() {
-            let city = document.getElementById('city-input').value.trim();
+            const city = document.getElementById('city-input').value.trim();
             if(!city) return;
 
-            document.getElementById('city-name').textContent = "SEARCHING...";
+            const nameDisp = document.getElementById('city-name');
+            const tempDisp = document.getElementById('temp-val');
+            const statDisp = document.getElementById('stat-val');
+
+            nameDisp.textContent = "LOCATING...";
+            statDisp.textContent = "GEOTAGGING...";
 
             try {
-                // If it's just one word, we tip the API off that it's likely a city
-                const query = city.includes(',') ? city : `${city},US`;
-                
-                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(query)}&units=imperial&appid=${API_KEY}`);
-                const data = await response.json();
+                // Step 1: Geocode the city name to coordinates (latitude/longitude)
+                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`);
+                const geoData = await geoRes.json();
 
-                if (data.cod === 200) {
-                    document.getElementById('city-name').textContent = data.name;
-                    document.getElementById('temp-val').textContent = Math.round(data.main.temp) + "°";
-                    document.getElementById('stat-val').textContent = "SIGNAL OK";
-                    document.getElementById('stat-val').style.color = "#00ff00";
-                } else {
-                    // If it failed with ",US", try one last time with just the raw input
-                    const retry = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=imperial&appid=${API_KEY}`);
-                    const retryData = await retry.json();
-                    
-                    if(retryData.cod === 200) {
-                        document.getElementById('city-name').textContent = retryData.name;
-                        document.getElementById('temp-val').textContent = Math.round(retryData.main.temp) + "°";
-                    } else {
-                        document.getElementById('city-name').textContent = "NOT FOUND";
-                        document.getElementById('stat-val').textContent = "REASON: " + retryData.message;
-                    }
+                if (!geoData.results || geoData.results.length === 0) {
+                    nameDisp.textContent = "NOT FOUND";
+                    statDisp.textContent = "CHECK SPELLING";
+                    return;
                 }
+
+                const { latitude, longitude, name, admin1 } = geoData.results[0];
+                nameDisp.textContent = `${name}, ${admin1 || ''}`;
+
+                // Step 2: Get weather using the coordinates
+                statDisp.textContent = "FETCHING DATA...";
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&temperature_unit=fahrenheit`);
+                const weatherData = await weatherRes.json();
+
+                if (weatherData.current_weather) {
+                    tempDisp.textContent = Math.round(weatherData.current_weather.temperature) + "°";
+                    statDisp.textContent = "SIGNAL ACQUIRED";
+                    statDisp.style.color = "#00ff00";
+                    document.getElementById('city-input').value = "";
+                }
+
             } catch (err) {
-                document.getElementById('city-name').textContent = "BLOCKED";
-                document.getElementById('stat-val').textContent = "CHECK YOUR HOSTING";
+                nameDisp.textContent = "ERROR";
+                statDisp.textContent = "SERVICE OFFLINE";
+                statDisp.style.color = "#ff3333";
             }
         }
+
+        document.getElementById("city-input").addEventListener("keyup", (e) => {
+            if (e.key === "Enter") getWeather();
+        });
     </script>
 </body>
 </html>
