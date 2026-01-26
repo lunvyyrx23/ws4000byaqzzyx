@@ -5,34 +5,42 @@
     body {
         margin: 0;
         padding: 0;
-        /* FORCING THE EXACT URL FROM YOUR NEOCITIES STORAGE */
-        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png');
-        background-size: 100% 100%;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-color: #031b60; /* Deep blue fallback if image fails */
+        background-color: #000; /* Black bars if image fails */
         color: white;
         font-family: sans-serif;
         height: 100vh;
+        width: 100vw;
+        display: flex;
         overflow: hidden;
     }
 
-    /* THE SOFT LIGHT SIDEBAR (Light Blue to Transparent Blue) */
+    /* THE SOFT LIGHT SIDEBAR - Fixed Width */
     #sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
         width: 195px;
         height: 100%;
-        /* The requested "Soft Light to Blue" glow */
         background: linear-gradient(90deg, 
             rgba(135, 206, 250, 0.5) 0%, 
             rgba(30, 144, 255, 0.2) 60%, 
             rgba(0, 0, 139, 0) 100%);
         border-right: 1px solid rgba(255, 255, 255, 0.2);
         padding: 35px 20px;
+        box-sizing: border-box;
         z-index: 10;
-        backdrop-filter: blur(6px); /* Makes the light look "Soft" */
+        backdrop-filter: blur(6px);
+        flex-shrink: 0; /* Prevents sidebar from squishing */
+    }
+
+    /* THE DYNAMIC IMAGE CONTAINER - Fills the rest of the screen */
+    #display-area {
+        flex-grow: 1; /* Automatically takes up all space after the sidebar */
+        height: 100%;
+        /* FORCING THE IMAGE INTO THIS SPECIFIC SPACE */
+        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png');
+        background-size: cover; /* Stretches/crops to fill exactly */
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 60px;
+        box-sizing: border-box;
     }
 
     #sidebar-text {
@@ -40,15 +48,7 @@
         font-weight: bold;
         font-size: 1.3rem;
         text-shadow: 2px 2px #000;
-        line-height: 1.1;
         text-transform: uppercase;
-    }
-
-    /* MAIN CONTENT AREA */
-    #content {
-        margin-left: 210px;
-        padding-top: 60px;
-        position: relative;
     }
 
     .yellow-title {
@@ -57,19 +57,18 @@
         font-weight: bold;
         text-shadow: 3px 3px #000;
         text-transform: uppercase;
-        margin-bottom: 0;
+        margin: 0;
     }
 
     #temp-value {
-        font-size: 12rem;
+        font-size: clamp(6rem, 15vw, 12rem); /* Resizes based on screen width */
         font-weight: bold;
         text-shadow: 6px 6px #000;
-        margin: 5px 0;
-        letter-spacing: -5px;
+        margin: 10px 0;
     }
 
     .weather-details {
-        font-size: 2.4rem;
+        font-size: clamp(1.2rem, 3vw, 2.4rem); /* Resizes based on screen width */
         line-height: 1.6;
         text-shadow: 3px 3px #000;
         font-weight: bold;
@@ -82,7 +81,7 @@
         <div id="sidebar-text">LOCAL<br>FORECAST</div>
     </div>
 
-    <div id="content">
+    <div id="display-area">
         <div class="yellow-title">Current Conditions</div>
         <div id="temp-value">36°</div>
         
