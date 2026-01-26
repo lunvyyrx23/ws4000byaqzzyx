@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>WeatherStar 4000+ Emulator</title>
+    <title>WS4000 Local Station</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,24 +17,13 @@
             </div>
         </div>
 
-        <div id="overlay">
-            <div id="station-name">INITIALIZING STATION...</div>
+        <div id="data-container">
+            <div id="station-name">INITIALIZING...</div>
             
-            <div id="weather-grid">
-                <div class="col-left">
-                    <div id="big-temp">--°</div>
-                    <div id="cond-text">LOADING</div>
-                    <img id="ws-icon" src="https://wsbylunv.neocities.org/sunny.png">
-                    <div id="wind-row">Wind: <span id="wind-val">CALM</span></div>
-                </div>
-
-                <div class="col-right">
-                    <div class="data-item"><span class="lbl">Humidity:</span> <span id="hum">--%</span></div>
-                    <div class="data-item"><span class="lbl">Dewpoint:</span> <span id="dew">--°</span></div>
-                    <div class="data-item"><span class="lbl">Ceiling:</span> <span id="ceil">UNLIMITED</span></div>
-                    <div class="data-item"><span class="lbl">Visibility:</span> <span id="vis">-- MI.</span></div>
-                    <div class="data-item"><span class="lbl">Pressure:</span> <span id="pres">--.--</span></div>
-                </div>
+            <div id="main-display">
+                <div id="big-temp">--°</div>
+                <div id="cond-text">--</div>
+                <div id="wind-line">Wind: <span id="wind-val">--</span></div>
             </div>
         </div>
     </div>
