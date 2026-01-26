@@ -31,93 +31,126 @@
     #ws4000-screen {
         width: 1091px !important; 
         height: 820px !important;
-        flex-shrink: 0 !important;
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
         background-size: 100% 100% !important; 
         position: relative !important;
     }
 
-    /* 3. Mobile Scaling */
-    @media only screen and (max-width: 1090px) {
-        #ws4000-screen { transform: scale(0.35) !important; }
+    /* 3. SIDEBAR: The classic blue gradient bar */
+    .sidebar {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 180px !important;
+        height: 100% !important;
+        background: linear-gradient(to right, #0000aa, #000044) !important;
+        border-right: 4px solid #fff !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding-top: 50px !important;
+        padding-left: 20px !important;
+        z-index: 10 !important;
     }
 
-    /* 4. Header */
+    .sidebar-label {
+        color: #ffff00 !important;
+        font-size: 2.2rem !important;
+        text-shadow: 3px 3px #000 !important;
+        margin-bottom: 10px !important;
+    }
+
+    .sidebar-option {
+        color: #fff !important;
+        font-size: 1.8rem !important;
+        text-shadow: 2px 2px #000 !important;
+    }
+
+    /* 4. HEADER: Far Right */
     .header {
         color: #ffff00 !important;
         font-size: 3rem !important;
         text-shadow: 4px 4px #000 !important;
         position: absolute !important;
         top: 50px !important;   
-        left: 350px !important; 
+        right: 50px !important; 
+        text-align: right !important;
     }
 
-    /* 5. WEATHER ICON: Down 50px (335 -> 385) */
+    /* 5. WEATHER ICON & WIND: Far Right */
     #weather-icon {
         position: absolute !important;
         top: 385px !important; 
-        left: 125px !important;
+        right: 200px !important; /* Shifted to right side */
         width: 150px !important;
         height: auto !important;
     }
 
-    /* 6. WIND SUBTEXT: Shifted to stay below the icon (530 -> 580) */
     .icon-subtext {
         position: absolute !important;
         top: 580px !important; 
-        left: 125px !important;
+        right: 170px !important;
         color: #fff !important;
         font-size: 2.2rem !important;
         text-shadow: 4px 4px #000 !important;
         white-space: pre !important;
     }
 
-    /* 7. YELLOW LABEL */
+    /* 6. YELLOW LOCATION LABEL: Far Right */
     .location-label {
         position: absolute !important;
         top: 220px !important; 
-        right: 120px !important; 
+        right: 50px !important; 
         color: #ffff00 !important;
         font-size: 2.2rem !important;
         text-shadow: 4px 4px #000 !important;
+        text-align: right !important;
     }
 
-    /* 8. TEMPERATURE (Stays at 200px) */
+    /* 7. TEMPERATURE & MIST: Far Right */
     #temp-value {
         position: absolute !important;
         top: 200px !important;
-        left: 100px !important; 
+        right: 320px !important; /* Positioned relative to right edge */
         font-size: 8.8rem !important;
         text-shadow: 8px 8px #000 !important;
         color: #fff !important;
     }
 
-    /* 9. MIST: Down 25px (310 -> 335) */
     .condition-label {
         position: absolute !important;
         top: 335px !important; 
-        left: 130px !important; 
+        right: 330px !important; 
         font-size: 1.5rem !important;
         text-shadow: 4px 4px #000 !important;
         color: #fff !important;
     }
 
-    /* 10. WEATHER STATS: Up 75px (370 -> 295) */
+    /* 8. WEATHER STATS: Far Right */
     .stats-box {
         position: absolute !important;
         top: 295px !important; 
-        right: 370px !important; 
+        right: 50px !important; 
         font-size: 2.2rem !important;
         line-height: 1.6 !important;
         text-shadow: 4px 4px #000 !important;
         color: #fff !important;
-        text-align: left !important;
+        text-align: right !important; /* Right aligned text */
+    }
+
+    /* 9. Mobile Scaling */
+    @media only screen and (max-width: 1090px) {
+        #ws4000-screen { transform: scale(0.35) !important; }
     }
 </style>
 </head>
 <body>
 
     <div id="ws4000-screen">
+        <div class="sidebar">
+            <div class="sidebar-label">City</div>
+            <div class="sidebar-option">Yoyle City</div>
+        </div>
+
         <div class="header">Current<br>Conditions</div>
 
         <img id="weather-icon" src="https://wsbylunv.neocities.org/yea/Cloudy.gif" alt="Cloudy">
