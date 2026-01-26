@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,23 +43,23 @@
         transform-origin: center center;
     }
 
-    /* 3. ADAPTIVE SCALING FOR PHONE */
+    /* 3. Adaptive Scaling for Mobile */
     @media only screen and (max-width: 1090px) {
         #ws4000-screen { transform: scale(0.35) !important; }
     }
 
-    /* 4. THE HEADER: Split, moved down 50px, right 100px */
+    /* 4. HEADER: Stacked, Down 50px, Right 350px (Original 100 + 250) */
     .header {
         color: #ffff00 !important;
         font-size: 3rem !important;
         text-shadow: 4px 4px #000 !important;
         position: absolute !important;
-        top: 50px !important;   /* Down 50px */
-        left: 100px !important; /* Right 100px */
+        top: 50px !important;   
+        left: 350px !important; /* Moved right by an additional 250px */
         line-height: 1.1 !important;
     }
 
-    /* 5. TEMP & MIST: Smaller by 50px (scaled down from previous 12rem/2.8rem) */
+    /* 5. TEMP & MIST: Smaller size */
     .temp-box {
         position: absolute !important;
         top: 200px !important;
@@ -66,7 +67,6 @@
     }
 
     #temp-value {
-        /* Was 12rem (~192px), reduced by 50px to ~142px (approx 8.8rem) */
         font-size: 8.8rem !important;
         line-height: 0.8 !important;
         text-shadow: 8px 8px #000 !important;
@@ -74,16 +74,15 @@
     }
 
     .condition-label {
-        /* Was 2.8rem (~45px), reduced by 50px would be negative, so set to a smaller legible size */
         font-size: 1.5rem !important;
         text-shadow: 4px 4px #000 !important;
         color: #fff !important;
     }
 
-    /* 6. WEATHER STATS: Moved down by 500px */
+    /* 6. WEATHER STATS: Moved up by 100px (500 - 100 = 400px from top) */
     .stats-box {
         position: absolute !important;
-        top: 500px !important; /* Moved down 500px from top */
+        top: 400px !important; /* Lifted up to 400px */
         right: 75px !important;
         font-size: 2.2rem !important;
         line-height: 1.6 !important;
