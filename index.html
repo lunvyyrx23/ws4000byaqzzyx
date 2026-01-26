@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WS4000 Open-Meteo Edition</title>
+    <title>WS4000 Static UI</title>
     <style>
         @font-face {
             font-family: "Star4000";
@@ -31,8 +31,8 @@
         .label { color: #666; font-size: 0.7rem; margin-top: 15px; text-transform: uppercase; }
         .val { color: #00ffff; font-size: 1.2rem; text-transform: uppercase; }
         #temp-val { color: #fff; font-size: 3.5rem; margin: 5px 0; }
-        #stat-val { font-size: 0.7rem; margin-top: 5px; color: #555; }
-
+        #stat-val { font-size: 0.7rem; margin-top: 5px; color: #888; }
+        
         #screen-container { flex-grow: 1; background: black; display: flex; justify-content: center; align-items: center; }
         #bg { width: 100%; height: 100%; object-fit: contain; }
     </style>
@@ -40,19 +40,19 @@
 <body>
 
     <div id="sidebar">
-        <h2 style="color:#ffff00; font-size:0.9rem; margin-bottom: 15px;">STATION SEARCH</h2>
-        <input type="text" id="city-input" placeholder="e.g. Miami">
-        <button onclick="getWeather()">CONNECT</button>
+        <h2 style="color:#ffff00; font-size:0.9rem; margin-bottom: 15px;">STATION ID</h2>
+        <input type="text" id="city-input" placeholder="Input Disabled">
+        <button disabled style="opacity: 0.5; cursor: default;">OFFLINE</button>
         
         <div id="weather-info">
-            <div class="label">LOCATION</div>
-            <div id="city-name" class="val">---</div>
+            <div class="label">CURRENT LOCATION</div>
+            <div id="city-name" class="val">MANUAL MODE</div>
             
-            <div class="label">TEMPERATURE</div>
-            <div id="temp-val">--°</div>
+            <div class="label">LOCAL TEMPERATURE</div>
+            <div id="temp-val">72°</div>
             
-            <div class="label">STATUS</div>
-            <div id="stat-val">READY (NO KEY REQ)</div>
+            <div class="label">SYSTEM STATUS</div>
+            <div id="stat-val">UI PREVIEW ONLY</div>
         </div>
     </div>
 
@@ -60,54 +60,5 @@
         <img id="bg" src="https://wsbylunv.neocities.org/ws4000_bg.png">
     </div>
 
-    <script>
-        async function getWeather() {
-            const city = document.getElementById('city-input').value.trim();
-            if(!city) return;
-
-            const nameDisp = document.getElementById('city-name');
-            const tempDisp = document.getElementById('temp-val');
-            const statDisp = document.getElementById('stat-val');
-
-            nameDisp.textContent = "LOCATING...";
-            statDisp.textContent = "GEOTAGGING...";
-
-            try {
-                // Step 1: Geocode the city name to coordinates (latitude/longitude)
-                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`);
-                const geoData = await geoRes.json();
-
-                if (!geoData.results || geoData.results.length === 0) {
-                    nameDisp.textContent = "NOT FOUND";
-                    statDisp.textContent = "CHECK SPELLING";
-                    return;
-                }
-
-                const { latitude, longitude, name, admin1 } = geoData.results[0];
-                nameDisp.textContent = `${name}, ${admin1 || ''}`;
-
-                // Step 2: Get weather using the coordinates
-                statDisp.textContent = "FETCHING DATA...";
-                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&temperature_unit=fahrenheit`);
-                const weatherData = await weatherRes.json();
-
-                if (weatherData.current_weather) {
-                    tempDisp.textContent = Math.round(weatherData.current_weather.temperature) + "°";
-                    statDisp.textContent = "SIGNAL ACQUIRED";
-                    statDisp.style.color = "#00ff00";
-                    document.getElementById('city-input').value = "";
-                }
-
-            } catch (err) {
-                nameDisp.textContent = "ERROR";
-                statDisp.textContent = "SERVICE OFFLINE";
-                statDisp.style.color = "#ff3333";
-            }
-        }
-
-        document.getElementById("city-input").addEventListener("keyup", (e) => {
-            if (e.key === "Enter") getWeather();
-        });
-    </script>
 </body>
 </html>
