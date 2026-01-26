@@ -9,35 +9,32 @@ setInterval(updateClock, 1000);
 
 async function fetchWeather(lat, lon) {
     try {
-        // Step 1: Get Station Metadata
-        const pRes = await fetch(`${PROXY}${encodeURIComponent(`https://api.weather.gov/points/${lat},${lon}`)}`);
+        const pUrl = `https://api.weather.gov/points/${lat},${lon}`;
+        const pRes = await fetch(`${PROXY}${encodeURIComponent(pUrl)}`);
         const pData = JSON.parse((await pRes.json()).contents);
         
-        // Step 2: Get Observations (METAR)
+        const fRes = await fetch(`${PROXY}${encodeURIComponent(pData.properties.forecast)}`);
+        const fData = JSON.parse((await fRes.json()).contents);
+        const cur = fData.properties.periods[0];
+
+        // Fetch local station name
         const sRes = await fetch(`${PROXY}${encodeURIComponent(pData.properties.observationStations)}`);
         const sData = JSON.parse((await sRes.json()).contents);
-        const obsRes = await fetch(`${PROXY}${encodeURIComponent(`${sData.features[0].id}/observations/latest`)}`);
-        const ob = JSON.parse((await obsRes.json()).contents).properties;
-
-        // Update UI with Observation Data
-        document.getElementById('station-name').textContent = sData.features[0].properties.name.toUpperCase();
-        document.getElementById('big-temp').textContent = Math.round((ob.temperature.value * 9/5) + 32) + "°";
-        document.getElementById('cond-text').textContent = ob.textDescription.toUpperCase();
-        document.getElementById('hum').textContent = Math.round(ob.relativeHumidity.value) + "%";
-        document.getElementById('dew').textContent = Math.round((ob.dewpoint.value * 9/5) + 32) + "°";
-        document.getElementById('vis').textContent = Math.round(ob.visibility.value / 1609.34) + " MI.";
-        document.getElementById('pres').textContent = (ob.barometricPressure.value / 3386.39).toFixed(2);
         
-        // Handling Wind
-        const speed = Math.round(ob.windSpeed.value * 0.621371) || 0;
-        document.getElementById('wind-val').textContent = speed > 0 ? `${ob.windDirection.value}° ${speed}` : "CALM";
+        document.getElementById('station-name').textContent = sData.features[0].properties.name.toUpperCase();
+        document.getElementById('big-temp').textContent = cur.temperature + "°";
+        document.getElementById('cond-text').textContent = cur.shortForecast.toUpperCase();
+        document.getElementById('wind-val').textContent = `${cur.windDirection} ${cur.windSpeed}`;
 
     } catch (err) {
-        document.getElementById('cond-text').textContent = "ERROR LOADING DATA";
+        document.getElementById('station-name').textContent = "STATION UNAVAILABLE";
     }
 }
 
 window.onload = () => {
-    navigator.geolocation.getCurrentPosition(pos => fetchWeather(pos.coords.latitude, pos.coords.longitude));
     updateClock();
+    navigator.geolocation.getCurrentPosition(
+        pos => fetchWeather(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
+        () => { document.getElementById('station-name').textContent = "LOCATION BLOCKED"; }
+    );
 };
