@@ -23,36 +23,35 @@
         width: 100% !important;
         height: 100% !important;
         overflow: hidden !important;
-        background-color: #000; /* Black bars around the smaller image */
+        background-color: #000; /* Black background around the small image */
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     body {
-        /* CENTERED ORIGINAL SIZE */
+        /* FORCING THE IMAGE SMALLER (Set to 60% of screen width) */
         background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png') !important;
         background-repeat: no-repeat !important;
         background-position: center center !important; 
-        background-size: auto !important; /* Forces original pixel size */
-        
-        display: flex;
-        flex-direction: column;
-        justify-content: center; /* Centers text vertically */
-        align-items: center;    /* Centers text horizontally */
+        background-size: 60% auto !important; /* Adjust 60% to make it even smaller or larger */
     }
 
-    /* 2. Text Layout (Adjusted to sit over the centered image) */
+    /* 2. Text Container (Matches the 60% width of the background) */
     #main-container {
-        width: 640px;  /* Typical original WS4000 width, adjust if your image is different */
-        height: 480px; /* Typical original height */
+        width: 60%; 
+        aspect-ratio: 4 / 3; /* Matches the old TV ratio of the image */
         display: flex;
         flex-direction: column;
-        padding: 40px;
+        justify-content: flex-start;
+        padding: 4%; /* Padding inside the small image area */
     }
 
     .header {
         color: #ffff00 !important;
-        font-size: 2.5rem;
-        text-shadow: 3px 3px #000;
-        margin-bottom: 20px !important;
+        font-size: 2rem;
+        text-shadow: 2px 2px #000;
+        margin-bottom: 5% !important;
     }
 
     .data-container {
@@ -62,24 +61,25 @@
     }
 
     #temp-value {
-        font-size: 10rem;
+        font-size: 8rem;
         line-height: 0.9;
-        text-shadow: 6px 6px #000;
+        text-shadow: 4px 4px #000;
         color: white;
     }
 
     .condition-text {
-        font-size: 2.2rem;
-        text-shadow: 3px 3px #000;
+        font-size: 1.8rem;
+        text-shadow: 2px 2px #000;
         color: white;
         margin-top: 5px !important;
     }
 
     .stats-column {
-        font-size: 2rem;
-        line-height: 1.5;
-        text-shadow: 3px 3px #000;
+        font-size: 1.5rem;
+        line-height: 1.4;
+        text-shadow: 2px 2px #000;
         color: white;
+        text-align: left;
     }
 </style>
 </head>
