@@ -1,0 +1,256 @@
+/* =========================
+   FONT
+========================= */
+@font-face {
+  font-family: "Star4000";
+  src: url("https://wsbylunv.neocities.org/Star4000.ttf") format("truetype");
+}
+
+* {
+  font-family: "Star4000", monospace;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+body {
+  background: #111;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.ws-container {
+  display: flex;
+  position: relative;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  width: 280px;
+  background: linear-gradient(90deg,#001a33,#003366,#001a33);
+  border-right: 5px solid #000;
+  padding: 20px;
+  height: 820px;
+}
+
+.label {
+  color: #fff;
+  font-size: 14px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.tiny {
+  font-size: 12px;
+  color: #00ccff;
+  line-height: 1.2;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  background: #000;
+  border: 2px solid #ffff00;
+  color: #ffff00;
+  font-size: 18px;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  margin-top: 5px;
+  padding: 10px;
+  background: #ffff00;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #fff200;
+}
+
+/* =========================
+   MAIN SCREEN
+========================= */
+
+#ws4000-screen {
+  position: relative;
+  width: 1091px;
+  height: 820px;
+  background-size: 100% 100%;
+  overflow: hidden;
+  background-image: url("https://wsbylunv.neocities.org/ws4000_bg.png");
+  transition: background-position 1s ease-in-out, background-size 1s ease-in-out;
+}
+
+
+/* =========================
+   TEXT STYLING
+========================= */
+
+.header {
+  color: #ffff00;
+  font-size: 55px;
+  position: absolute;
+  top: 50px;
+  left: 350px;
+  text-transform: uppercase;
+  text-shadow:
+    -3px -3px 0 #000,
+     3px -3px 0 #000,
+    -3px  3px 0 #000,
+     3px  3px 0 #000;
+}
+
+.location-label {
+  color: #ffff00;
+  font-size: 38px;
+  position: absolute;
+  top: 220px;
+  right: 120px;
+  text-align: right;
+  width: 650px;
+}
+
+/* =========================
+   PAGE CONTAINERS
+========================= */
+
+#current-content,
+#obs-table,
+#hourly-content,
+#travel-content {
+  display: none;
+}
+
+#temp-value {
+  color: #fff;
+  font-size: 140px;
+  position: absolute;
+  top: 200px;
+  left: 100px;
+}
+
+#weather-icon {
+  position: absolute;
+  top: 385px;
+  left: 125px;
+  width: 180px;
+  image-rendering: pixelated;
+}
+
+#cond-text {
+  color: #fff;
+  font-size: 30px;
+  position: absolute;
+  top: 335px;
+  left: 130px;
+}
+
+#stats {
+  color: #fff;
+  font-size: 34px;
+  line-height: 1.4;
+  position: absolute;
+  top: 290px;
+  right: 315px;
+  width: 380px;
+}
+
+/* =========================
+   HOURLY / TRAVEL LISTS
+========================= */
+
+#hourly-content,
+#travel-content {
+  width: 930px;
+  height: 490px;
+  position: absolute;
+  top: 200px;
+  left: 80px;
+  overflow: hidden;
+}
+
+.row-style {
+  display: grid;
+  font-size: 38px;
+  margin-bottom: 20px;
+  align-items: center;
+  color: #fff;
+}
+
+.hourly-row {
+  grid-template-columns: 240px 100px 560px;
+}
+
+.travel-row {
+  grid-template-columns: 405px 120px 140px 140px;
+}
+
+.temp-num {
+  color: #ffff00;
+  text-align: right;
+}
+
+.wind-num {
+  color: #ffff00;
+  text-align: right;
+}
+
+.list-icon {
+  width: 85px;
+  image-rendering: pixelated;
+}
+
+/* =========================
+   SCANLINES
+========================= */
+
+#scanlines {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 90;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.0) 0px,
+      rgba(0,0,0,0.0) 2px,
+      rgba(0,0,0,0.25) 3px
+    );
+}
+
+body.scan-off #scanlines {
+  display: none;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+#loading-screen {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  color: #ffff00;
+  font-size: 45px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
