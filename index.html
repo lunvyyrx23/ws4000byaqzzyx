@@ -1,140 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<style>
-    /* 1. LOCAL FONT CHECK */
-    @font-face {
-        font-family: 'Star4000';
-        /* This tells Edge: Check the user's PC for "Star4000" first! */
-        src: local('Star4000'), 
-             url('https://wsbylunv.neocities.org/Star4000.ttf') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WeatherStar 4000</title>
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Star4000', sans-serif !important;
-        -webkit-font-smoothing: none;
-        text-transform: none !important;
-    }
+<link rel="stylesheet" href="css/style.css">
 
-    html, body {
-        width: 100%;
-        height: 100%;
-        background-color: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: auto; /* Allow scrolling if 0.5 is still large */
-    }
-
-    /* 2. THE 0.5 SCALE CONTAINER */
-    #ws4000-screen {
-        position: relative;
-        width: 1091px; 
-        height: 820px;
-        background-image: url('https://wsbylunv.neocities.org/ws4000_bg.png');
-        background-size: 100% 100%;
-        background-repeat: no-repeat;
-        /* SCALE SET TO 0.5 */
-        transform: scale(0.5); 
-        transform-origin: center center;
-        flex-shrink: 0;
-    }
-
-    /* 3. ELEMENTS (Coordinates preserved) */
-    .header {
-        color: #ffff00 !important;
-        font-size: 55px !important;
-        text-shadow: 4px 4px #000 !important;
-        position: absolute;
-        top: 50px;   
-        left: 350px; 
-        line-height: 1.1;
-    }
-
-    #weather-icon {
-        position: absolute;
-        top: 385px; 
-        left: 125px;
-        width: 150px;
-        height: auto;
-    }
-
-    .icon-subtext {
-        position: absolute;
-        top: 580px; 
-        left: 125px;
-        color: #fff !important;
-        font-size: 35px !important;
-        text-shadow: 4px 4px #000 !important;
-        white-space: pre !important;
-    }
-
-    .location-label {
-        position: absolute;
-        top: 220px; 
-        right: 120px; 
-        color: #ffff00 !important;
-        font-size: 38px !important;
-        text-shadow: 4px 4px #000 !important;
-    }
-
-    #temp-value {
-        position: absolute;
-        top: 200px;
-        left: 100px; 
-        font-size: 140px !important;
-        text-shadow: 10px 10px #000 !important;
-        color: #fff !important;
-        line-height: 0.8;
-    }
-
-    .condition-label {
-        position: absolute;
-        top: 335px; 
-        left: 130px; 
-        font-size: 24px !important;
-        text-shadow: 4px 4px #000 !important;
-        color: #fff !important;
-    }
-
-    .stats-box {
-        position: absolute;
-        top: 295px; 
-        right: 370px; 
-        font-size: 38px !important;
-        line-height: 1.6 !important;
-        text-shadow: 4px 4px #000 !important;
-        color: #fff !important;
-    }
-</style>
 </head>
 <body>
 
-    <div id="ws4000-screen">
-        <div class="header">Current<br>Conditions</div>
+<div class="ws-container">
 
-        <img id="weather-icon" src="https://wsbylunv.neocities.org/yea/Cloudy.gif" alt="Cloudy">
-        <div class="icon-subtext">Wind:      E 133</div>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="label">LOCATION</div>
+    <input type="text" id="cityInput" placeholder="City or ZIP" />
+    <button id="updateBtn">UPDATE</button>
 
-        <div class="location-label">the summit of yoyle mountain</div>
-
-        <div id="temp-value">36°</div>
-        <div class="condition-label">Mist</div>
-
-        <div class="stats-box">
-            Wind: Calm<br>
-            Humidity: 92%<br>
-            Dewpoint: 34°<br>
-            Ceiling: 500 ft<br>
-            Visib: 13 yd
-        </div>
+    <div class="label">AUTO UPDATE</div>
+    <div class="tiny">
+      Polling NWS every <span id="poll-mins">2</span> min<br>
+      Last: <span id="last-update">--</span>
     </div>
+
+    <div class="label">VISUALS</div>
+    <button id="scan-btn">SCANLINES: ON</button>
+
+    <div class="label">MUSIC</div>
+    <div id="music-info" class="tiny">OFFLINE</div>
+    <button id="mute-btn">MUTE MUSIC</button>
+
+    <div class="label">CONTROLS</div>
+    <button id="pause-btn">PAUSE</button>
+
+    <div class="label">PAGES</div>
+    <button class="test-btn" data-page="current">1. CURRENT</button>
+    <button class="test-btn" data-page="local-obs">2. LOCAL OBS</button>
+    <button class="test-btn" data-page="hourly">3. HOURLY</button>
+    <button class="test-btn" data-page="travel">4. TRAVEL</button>
+    <button class="test-btn" data-page="regional-obs">5. REGIONAL OBS</button>
+  </div>
+
+  <!-- MAIN SCREEN -->
+  <div id="ws4000-screen">
+
+    <div id="loading-screen">Loading Data...</div>
+
+    <div id="page-header" class="header">
+      CURRENT<br>CONDITIONS
+    </div>
+
+    <div id="scanlines"></div>
+
+    <!-- CURRENT -->
+    <div id="current-content">
+      <img id="weather-icon" />
+      <div id="temp-value">--°</div>
+      <div id="cond-text">Loading...</div>
+      <div id="stats"></div>
+    </div>
+
+    <!-- LOCAL OBS -->
+    <div id="obs-table">
+      <div id="obs-rows"></div>
+    </div>
+
+    <!-- HOURLY -->
+    <div id="hourly-content">
+      <div id="hourly-rows"></div>
+    </div>
+
+    <!-- TRAVEL -->
+    <div id="travel-content">
+      <div id="travel-rows"></div>
+    </div>
+
+    <div id="loc-name" class="location-label">--</div>
+
+  </div>
+</div>
+
+<audio id="bg-audio"></audio>
+
+<!-- JS FILES (ORDER MATTERS) -->
+<script src="js/utils.js"></script>
+<script src="js/api.js"></script>
+<script src="js/regional.js"></script>
+<script src="js/pages.js"></script>
+<script src="js/music.js"></script>
+<script src="js/core.js"></script>
 
 </body>
 </html>
